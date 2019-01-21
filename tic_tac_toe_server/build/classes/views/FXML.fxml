@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tic_tac_toe_server.FXMLController">
+   <children>
+      <ImageView fitHeight="296.0" fitWidth="304.0" layoutX="-1.0" layoutY="43.0" opacity="0.13" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/background.png" />
+         </image>
+      </ImageView>
+      <ListView layoutX="280.0" prefHeight="400.0" prefWidth="230.0" style="-fx-background-color: #000000;" />
+      <ImageView fitHeight="224.0" fitWidth="240.0" layoutX="283.0" layoutY="76.0" opacity="0.13" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/background.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="66.0" layoutY="68.0" text="Tic Tac Toe" textFill="#eecf56">
+         <font>
+            <Font size="32.0" />
+         </font>
+      </Label>
+      <Label layoutX="95.0" layoutY="121.0" text="Server" textFill="#eecf56">
+         <font>
+            <Font name="System Bold" size="32.0" />
+         </font>
+      </Label>
+      <ToggleButton layoutX="112.0" layoutY="210.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="69.0" style="-fx-background-color: #eecf56;" text="off">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </ToggleButton>
+      <Label layoutX="85.0" layoutY="313.0" text="we are serve for " textFill="#eecf56">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </Label>
+      <Label layoutX="105.0" layoutY="346.0" text="0" textFill="#eecf56">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </Label>
+      <Label layoutX="129.0" layoutY="345.0" text="players" textFill="#eecf56">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </Label>
+      <Line endY="230.0" fill="#edcd58" layoutX="280.0" layoutY="168.0" startY="-170.0" stroke="#eecf56" strokeWidth="3.0" />
+   </children>
+</AnchorPane>

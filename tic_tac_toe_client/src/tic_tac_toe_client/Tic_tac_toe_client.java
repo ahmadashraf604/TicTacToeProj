@@ -208,7 +208,6 @@ public class Tic_tac_toe_client extends Application {
     public boolean receiveInvition(String sender, String reciever) {
         boolean invitationState = false;
         if (!isInGame()) {
-            System.err.println("receve false");
             this.isBeginer = false;
             this.sender = sender;
             this.reciever = reciever;

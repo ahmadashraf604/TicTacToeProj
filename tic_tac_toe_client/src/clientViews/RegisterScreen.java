@@ -1,6 +1,8 @@
 package clientViews;
 
 import common.Player;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -72,79 +74,22 @@ public class RegisterScreen extends AnchorPane {
         backgroundImage2.setPreserveRatio(true);
         backgroundImage2.setImage(new Image(getClass().getResourceAsStream("/images/background.png")));
 
-        anchorPane.setLayoutX(579.0);
-        anchorPane.setLayoutY(56.0);
+        AnchorPane.setBottomAnchor(anchorPane, 62.0);
+        AnchorPane.setLeftAnchor(anchorPane, 557.0);
+        AnchorPane.setRightAnchor(anchorPane, 66.0);
+        AnchorPane.setTopAnchor(anchorPane, 62.0);
+        anchorPane.setLayoutX(577.0);
+        anchorPane.setLayoutY(62.0);
         anchorPane.setPrefHeight(376.0);
         anchorPane.setPrefWidth(277.0);
         anchorPane.setStyle("-fx-background-color: #ecf0f1;");
 
-        emailTextField2.setFocusTraversable(false);
-        emailTextField2.setLayoutX(29.0);
-        emailTextField2.setLayoutY(160.0);
-        emailTextField2.setPrefHeight(25.0);
-        emailTextField2.setPrefWidth(200.0);
-        emailTextField2.setPromptText("Enter your email");
-        emailTextField2.setStyle("-fx-prompt-text-fill: gray;");
-        emailTextField2.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode() == KeyCode.ENTER) {
-                    passwordTextField2.requestFocus();
-                }
-            }
-        });
-
-        passwordTextField2.setFocusTraversable(false);
-        passwordTextField2.setLayoutX(29.0);
-        passwordTextField2.setLayoutY(211.0);
-        passwordTextField2.setPrefHeight(25.0);
-        passwordTextField2.setPrefWidth(200.0);
-        passwordTextField2.setPromptText("Enter your password");
-        passwordTextField2.setStyle("-fx-prompt-text-fill: gray;");
-        passwordTextField2.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode() == KeyCode.ENTER) {
-                    signUpMethod();
-                }
-            }
-        });
-
-        signInButton2.setLayoutX(39.0);
-        signInButton2.setLayoutY(305.0);
-        signInButton2.setMnemonicParsing(false);
-        signInButton2.setPrefHeight(25.0);
-        signInButton2.setPrefWidth(200.0);
-        signInButton2.setStyle("-fx-background-color: #eecf56; -fx-font-weight: bold;");
-        signInButton2.setText("Sign in ");
-        signInButton2.setTextFill(javafx.scene.paint.Color.valueOf("#666666"));
-
-        signUpLabel2.setLayoutX(95.0);
-        signUpLabel2.setLayoutY(39.0);
-        signUpLabel2.setPrefHeight(53.0);
-        signUpLabel2.setPrefWidth(87.0);
-        signUpLabel2.setStyle("-fx-font-weight: bold;");
-        signUpLabel2.setText("Sign up");
-        signUpLabel2.setTextAlignment(javafx.scene.text.TextAlignment.JUSTIFY);
-        signUpLabel2.setTextFill(javafx.scene.paint.Color.valueOf("#666666"));
-        signUpLabel2.setFont(new Font(24.0));
-
-        signUpButton2.setLayoutX(39.0);
-        signUpButton2.setLayoutY(273.0);
-        signUpButton2.setMnemonicParsing(false);
-        signUpButton2.setPrefHeight(25.0);
-        signUpButton2.setPrefWidth(200.0);
-        signUpButton2.setStyle("-fx-background-color: #eecf56; -fx-font-weight: bold;");
-        signUpButton2.setText("Sign up ");
-        signUpButton2.setTextFill(javafx.scene.paint.Color.valueOf("#666666"));
-        signUpButton2.setOpaqueInsets(new Insets(2.0));
-
         userNameTextField2.setFocusTraversable(false);
-        userNameTextField2.setLayoutX(29.0);
+        userNameTextField2.setLayoutX(39.0);
         userNameTextField2.setLayoutY(108.0);
         userNameTextField2.setPrefHeight(25.0);
         userNameTextField2.setPrefWidth(200.0);
-        userNameTextField2.setPromptText("Enter your username ");
+        userNameTextField2.setPromptText("Username ");
         userNameTextField2.setStyle("-fx-prompt-text-fill: gray;");
         userNameTextField2.setFocusTraversable(true);
         userNameTextField2.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -156,37 +101,98 @@ public class RegisterScreen extends AnchorPane {
             }
         });
 
+        emailTextField2.setFocusTraversable(false);
+        emailTextField2.setLayoutX(39.0);
+        emailTextField2.setLayoutY(165.0);
+        emailTextField2.setPrefHeight(25.0);
+        emailTextField2.setPrefWidth(200.0);
+        emailTextField2.setPromptText("Email");
+        emailTextField2.setStyle("-fx-prompt-text-fill: gray;");
+        emailTextField2.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode() == KeyCode.ENTER) {
+                    passwordTextField2.requestFocus();
+                }
+            }
+        });
+
+        passwordTextField2.setFocusTraversable(false);
+        passwordTextField2.setLayoutX(39.0);
+        passwordTextField2.setLayoutY(222.0);
+        passwordTextField2.setPrefHeight(25.0);
+        passwordTextField2.setPrefWidth(200.0);
+         passwordTextField2.setPromptText("Password");
+        passwordTextField2.setStyle("-fx-prompt-text-fill: gray;");
+        passwordTextField2.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode() == KeyCode.ENTER) {
+                    signUpMethod();
+                }
+            }
+        });
+
         userNameTextFieldError2.setLayoutX(39.0);
         userNameTextFieldError2.setLayoutY(133.0);
         userNameTextFieldError2.setText("");
         userNameTextFieldError2.setTextFill(javafx.scene.paint.Color.valueOf("#FF0000"));
 
         emailTextFieldError2.setLayoutX(39.0);
-        emailTextFieldError2.setLayoutY(188.0);
+        emailTextFieldError2.setLayoutY(190.0);
         emailTextFieldError2.setText("");
         emailTextFieldError2.setTextFill(javafx.scene.paint.Color.valueOf("#FF0000"));
 
         passwordTextFieldError2.setLayoutX(39.0);
-        passwordTextFieldError2.setLayoutY(236.0);
+        passwordTextFieldError2.setLayoutY(247.0);
         passwordTextFieldError2.setText("");
         passwordTextFieldError2.setTextFill(javafx.scene.paint.Color.valueOf("#FF0000"));
 
-        welcomeLabel2.setLayoutX(74.0);
-        welcomeLabel2.setLayoutY(128.0);
+        signUpButton2.setLayoutX(39.0);
+        signUpButton2.setLayoutY(281.0);
+        signUpButton2.setMnemonicParsing(false);
+        signUpButton2.setPrefHeight(25.0);
+        signUpButton2.setPrefWidth(200.0);
+        signUpButton2.setStyle("-fx-background-color: #eecf56;");
+        signUpButton2.setText("Sign up ");
+        signUpButton2.setFont(new Font("System Bold", 12.0));
+        signUpButton2.setTextFill(javafx.scene.paint.Color.valueOf("#2c3e50"));
+        signUpButton2.setOpaqueInsets(new Insets(2.0));
+
+        signInButton2.setLayoutX(39.0);
+        signInButton2.setLayoutY(316.0);
+        signInButton2.setMnemonicParsing(false);
+        signInButton2.setPrefHeight(25.0);
+        signInButton2.setPrefWidth(200.0);
+        signInButton2.setStyle("-fx-background-color: #eecf56; -fx-font-weight: bold;");
+        signInButton2.setText("Sign in ");
+        signInButton2.setFont(new Font("System Bold", 12.0));
+        signInButton2.setTextFill(javafx.scene.paint.Color.valueOf("#2c3e50"));
+
+        signUpLabel2.setLayoutX(95.0);
+        signUpLabel2.setLayoutY(39.0);
+        signUpLabel2.setPrefHeight(53.0);
+        signUpLabel2.setPrefWidth(87.0);
+        signUpLabel2.setStyle("-fx-font-weight: bold;");
+        signUpLabel2.setText("Sign up");
+        signUpLabel2.setTextAlignment(javafx.scene.text.TextAlignment.JUSTIFY);
+        signUpLabel2.setTextFill(javafx.scene.paint.Color.valueOf("#666666"));
+        signUpLabel2.setFont(new Font(24.0));
+
+        welcomeLabel2.setLayoutY(118.0);
         welcomeLabel2.setPrefHeight(60.0);
         welcomeLabel2.setPrefWidth(373.0);
-        welcomeLabel2.setStyle("-fx-font-weight: bold;");
         welcomeLabel2.setText("Welcome to Tic-tac toe");
+        welcomeLabel2.setFont(new Font("System Bold", 32.0));
         welcomeLabel2.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
-        welcomeLabel2.setFont(new Font(32.0));
 
-        infoLabel2.setLayoutX(80.0);
-        infoLabel2.setLayoutY(188.0);
+        infoLabel2.setLayoutX(85.0);
+        infoLabel2.setLayoutY(165.0);
         infoLabel2.setPrefHeight(85.0);
         infoLabel2.setPrefWidth(277.0);
-        infoLabel2.setText("The Tic Tac Toe game! Simple, quick, funny!");
+        infoLabel2.setText("The Tic Tac Toe game! Simple, Quick and" + "\n" + " Funny!");
         infoLabel2.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
-        infoLabel2.setFont(new Font(14.0));
+        infoLabel2.setFont(new Font(15.0));
 
         this.getChildren().add(backgroundImage2);
         anchorPane.getChildren().add(emailTextField2);
@@ -236,6 +242,8 @@ public class RegisterScreen extends AnchorPane {
                         stage.setTitle("sign in");
                         stage.setScene(scene);
                         stage.show();
+                    }else {
+                        emailTextFieldError2.setText("*this email is already exist");
                     }
 
                 } else {
@@ -243,10 +251,9 @@ public class RegisterScreen extends AnchorPane {
                         emailTextFieldError2.setText("*please enter valid email");
                     }
                     if (!isValidUserName(userNameTextField2.getText())) {
-                        userNameTextFieldError2.setText("*please enter valid username");
-                    }
+                        userNameTextFieldError2.setText("*please enter username between " + "\n " + 4 + " and " + 7 + " characters");                    }
                     if (!isValidPassword(passwordTextField2.getText())) {
-                        passwordTextFieldError2.setText("*please enter valid password");
+                        passwordTextFieldError2.setText("*please enter password with" + "\n" + " min 8 characters");
                     }
                 }
             }
@@ -263,6 +270,13 @@ public class RegisterScreen extends AnchorPane {
         } catch (AddressException ex) {
             isValid = false;
         }
+
+          /*String emailExp = "^([\\w-\\.]+){1,64}@([\\w&&[^_]]+){2,255}.[a-z]{2,}$";
+        if (email.matches(emailExp)) {
+            isValid = true;
+        } else {
+            isValid = false;
+        }*/
         return isValid;
     }
 

@@ -293,4 +293,9 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
         return dataBaseConnection.getPlayer(username);
     }
 
+    @Override
+    public boolean checkIfActive(String username) throws RemoteException {
+        return dataBaseConnection.isNotActive(username);
+    }
+
 }

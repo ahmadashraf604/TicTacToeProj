@@ -8,6 +8,8 @@ public interface ServerInt extends Remote {
     void register(String username, ClientInt clientRef) throws RemoteException;
 
     void unRegister(String username) throws RemoteException;
+    
+    public boolean checkIfActive(String username) throws RemoteException;
 
     List<Player> getActivePlayer() throws RemoteException;
 

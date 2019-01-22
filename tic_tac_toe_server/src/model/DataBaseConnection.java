@@ -58,6 +58,27 @@ public class DataBaseConnection {
         return null;
     }
 
+        public boolean isNotActive(String username) {
+        try {
+            ResultSet resultSet = statement.executeQuery(
+                    "SELECT * FROM players where (username='" + username + "' AND  active = '0' )");
+            if (resultSet.first()) {
+                if (resultSet.getInt("active") == 0) {
+
+                    System.out.println("offline user");
+                    return true;
+                } else {
+
+                    System.out.println("online user");
+                    return false;
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+         return false;
+    }
+
     private boolean setActive(String username) {
         try {
             return !(statement.execute("UPDATE players SET active = 1 WHERE (username = '" + username + "')"));

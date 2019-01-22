@@ -77,11 +77,11 @@ public class LoginScreen extends AnchorPane {
         anchorPane.setStyle("-fx-background-color: #ecf0f1;");
 
         userNameTextField.setFocusTraversable(false);
-        userNameTextField.setLayoutX(29.0);
+        userNameTextField.setLayoutX(39.0);
         userNameTextField.setLayoutY(119.0);
         userNameTextField.setPrefHeight(25.0);
         userNameTextField.setPrefWidth(200.0);
-        userNameTextField.setPromptText("Enter your username ");
+        userNameTextField.setPromptText("Username ");
         userNameTextField.setStyle("-fx-prompt-text-fill: gray;");
         userNameTextField.setFocusTraversable(true);
         userNameTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -102,11 +102,11 @@ public class LoginScreen extends AnchorPane {
         userNameTextFieldError.setTextFill(javafx.scene.paint.Color.valueOf("#FF0000"));
 
         passwordTextField.setFocusTraversable(false);
-        passwordTextField.setLayoutX(29.0);
+        passwordTextField.setLayoutX(39.0);
         passwordTextField.setLayoutY(163.0);
         passwordTextField.setPrefHeight(25.0);
         passwordTextField.setPrefWidth(200.0);
-        passwordTextField.setPromptText("Enter your password");
+        passwordTextField.setPromptText("Password");
         passwordTextField.setStyle("-fx-prompt-text-fill: gray;");
         passwordTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -124,8 +124,8 @@ public class LoginScreen extends AnchorPane {
         passwordTextFieldError.setText("");
         passwordTextFieldError.setTextFill(javafx.scene.paint.Color.valueOf("#FF0000"));
 
-        invalid.setLayoutX(29.0);
-        invalid.setLayoutY(202.0);
+        invalid.setLayoutX(39.0);
+        invalid.setLayoutY(195.0);
         invalid.setPrefHeight(25.0);
         invalid.setText("*invalid username or password");
         invalid.setVisible(false);
@@ -142,13 +142,14 @@ public class LoginScreen extends AnchorPane {
         serverError.setVisible(false);
 
         signInBtn.setLayoutX(39.0);
-        signInBtn.setLayoutY(232.0);
+        signInBtn.setLayoutY(229.0);
         signInBtn.setMnemonicParsing(false);
         signInBtn.setPrefHeight(25.0);
         signInBtn.setPrefWidth(200.0);
         signInBtn.setStyle("-fx-background-color: #eecf56;");
         signInBtn.setText("Sign in ");
-        signInBtn.setTextFill(javafx.scene.paint.Color.valueOf("#666666"));
+        signInBtn.setFont(new Font("System Bold",12.0));
+        signInBtn.setTextFill(javafx.scene.paint.Color.valueOf("#2c3e50"));
 
         signInLabel.setLayoutX(95.0);
         signInLabel.setLayoutY(39.0);
@@ -156,17 +157,19 @@ public class LoginScreen extends AnchorPane {
         signInLabel.setPrefWidth(87.0);
         signInLabel.setText("Sign in ");
         signInLabel.setTextAlignment(javafx.scene.text.TextAlignment.JUSTIFY);
+        signInLabel.setStyle("-fx-font-weight:  bold;");
         signInLabel.setTextFill(javafx.scene.paint.Color.valueOf("#666666"));
         signInLabel.setFont(new Font(24.0));
 
         signUpBtn.setLayoutX(39.0);
-        signUpBtn.setLayoutY(267.0);
+        signUpBtn.setLayoutY(263.0);
         signUpBtn.setMnemonicParsing(false);
         signUpBtn.setPrefHeight(25.0);
         signUpBtn.setPrefWidth(200.0);
         signUpBtn.setStyle("-fx-background-color: #eecf56;");
         signUpBtn.setText("Sign up ");
-        signUpBtn.setTextFill(javafx.scene.paint.Color.valueOf("#666666"));
+        signUpBtn.setFont(new Font("System Bold",12.0));
+        signUpBtn.setTextFill(javafx.scene.paint.Color.valueOf("#2c3e50"));
         signUpBtn.setOpaqueInsets(new Insets(2.0));
 
         backgroundImage.setFitHeight(500.0);
@@ -181,25 +184,26 @@ public class LoginScreen extends AnchorPane {
         welcomeLabel.setPrefHeight(60.0);
         welcomeLabel.setPrefWidth(373.0);
         welcomeLabel.setText("Welcome to Tic-tac toe");
+        welcomeLabel.setFont(new Font("System Bold",32.0));
         welcomeLabel.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
-        welcomeLabel.setFont(new Font(32.0));
 
-        infoLabel.setLayoutX(70.0);
-        infoLabel.setLayoutY(178.0);
+        infoLabel.setLayoutX(85.0);
+        infoLabel.setLayoutY(165.0);
         infoLabel.setPrefHeight(85.0);
         infoLabel.setPrefWidth(277.0);
-        infoLabel.setText("The Tic Tac Toe game! Simple, quick, funny!");
+        infoLabel.setText("The Tic Tac Toe game! Simple, Quick and"+"\n"+" Funny!");
         infoLabel.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
-        infoLabel.setFont(new Font(14.0));
+        infoLabel.setFont(new Font(15.0));
 
         playNowBtn.setLayoutX(70.0);
         playNowBtn.setLayoutY(276.0);
         playNowBtn.setMnemonicParsing(false);
         playNowBtn.setPrefHeight(34.0);
         playNowBtn.setPrefWidth(123.0);
-        playNowBtn.setStyle("-fx-background-color: #EECF56; -fx-font-size: 15;");
-        playNowBtn.setText("Play Now!");
-        playNowBtn.setTextFill(javafx.scene.paint.Color.valueOf("#666666"));
+        playNowBtn.setStyle("-fx-background-color: #EECF56;");
+        playNowBtn.setText("Play Offline!");
+        playNowBtn.setFont(new Font("System Bold",15.0));
+        playNowBtn.setTextFill(javafx.scene.paint.Color.valueOf("#2c3e50"));
 
         withFriendsLabel.setLayoutX(251.0);
         withFriendsLabel.setLayoutY(276.0);
@@ -277,8 +281,6 @@ public class LoginScreen extends AnchorPane {
         Player player = controller.signin(userNameTextField.getText(), passwordTextField.getText());
         if (player != null) {
             controller.openMultiPlayerScreen();
-        } else {
-            invalid.setText("*wrong username or password");
         }
     }
 }

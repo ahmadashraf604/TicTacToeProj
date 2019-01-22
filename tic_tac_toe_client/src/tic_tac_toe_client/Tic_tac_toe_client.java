@@ -126,19 +126,19 @@ public class Tic_tac_toe_client extends Application {
                 if (serverInt.checkIfActive(username)) {
                     System.out.println("not logged");
 
-                player = serverInt.signin(username, password);
-                if (player != null) {
-                    //register the user in server
-                    serverInt.register(username, client);
-                    openMultiPlayerScreen();
-                    loginScreen.getServerErrorLabel().setVisible(false);
-                    loginScreen.getInValidLabel().setVisible(false);
-                    return player;
-                } else {
-                    loginScreen.getServerErrorLabel().setVisible(false);
-                    loginScreen.getInValidLabel().setText("*wrong username or password");
-                    loginScreen.getInValidLabel().setVisible(true);
-                }
+                    player = serverInt.signin(username, password);
+                    if (player != null) {
+                        //register the user in server
+                        serverInt.register(username, client);
+                        openMultiPlayerScreen();
+                        loginScreen.getServerErrorLabel().setVisible(false);
+                        loginScreen.getInValidLabel().setVisible(false);
+                        return player;
+                    } else {
+                        loginScreen.getServerErrorLabel().setVisible(false);
+                        loginScreen.getInValidLabel().setText("*wrong username or password");
+                        loginScreen.getInValidLabel().setVisible(true);
+                    }
                 } else {
                     System.out.println(serverInt.checkIfActive(username));
                     System.out.println("logged");
@@ -151,7 +151,7 @@ public class Tic_tac_toe_client extends Application {
                 loginScreen.getServerErrorLabel().setVisible(true);
                 loginScreen.getInValidLabel().setVisible(false);
             }
-        
+
         } else {
             System.out.println("out");
             loginScreen.getServerErrorLabel().setVisible(true);
@@ -191,26 +191,20 @@ public class Tic_tac_toe_client extends Application {
     }
 
     public boolean sendInvition(String reciever) {
-        if (!isInGame()) {
-            boolean sendInvition = false;
+        if (!player.isInGame()) {
             if (connectToRegisery()) {
                 this.isBeginer = true;
                 this.sender = this.player.getUsername();
                 this.reciever = reciever;
                 try {
-                    sendInvition = serverInt.sendInvition(player.getUsername(), reciever);
-                    if (sendInvition) {
-                        this.isMyTurn = true;
-                        multiPlayerScreen.startGame();
-                        setInGame(true);
-                    }
+                    serverInt.sendInvition(player.getUsername(), reciever);
                 } catch (RemoteException ex) {
                     Logger.getLogger(Tic_tac_toe_client.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
                 System.out.println("server not found");
             }
-            return sendInvition;
+            return false;
         } else {
             makeAlert("Error", "You can not play with other friend after the game is finished");
             return false;
@@ -219,32 +213,28 @@ public class Tic_tac_toe_client extends Application {
 
     public boolean receiveInvition(String sender, String reciever) {
         boolean invitationState = false;
-        if (!isInGame()) {
+        if (!player.isInGame()) {
             this.isBeginer = false;
             this.sender = sender;
             this.reciever = reciever;
             final String text = "your friend " + sender + " ask you to play ";
 
-            final FutureTask query = new FutureTask(new Callable() {
-                @Override
-                public Object call() throws Exception {
-                    if (makeInfoAlert("Playing invitation", text)) {
-                        setInGame(true);
+            Platform.runLater(() -> {
+                if (makeInfoAlert("Playing invitation", text)) {
+                    try {
+                        serverInt.acceptInvitation(sender, reciever);
                         multiPlayerScreen.startGame();
-                        return true;
-                    } else {
-                        setInGame(false);
-                        makeAlert("invitation refuse", "we are sorry your friend refuse the request");
-                        return false;
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(Tic_tac_toe_client.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    try {
+                        serverInt.refuseInvitation(sender, reciever);
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(Tic_tac_toe_client.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             });
-            Platform.runLater(query);
-            try {
-                invitationState = (boolean) query.get();
-            } catch (InterruptedException | ExecutionException ex) {
-                Logger.getLogger(Tic_tac_toe_client.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
         return invitationState;
     }

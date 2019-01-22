@@ -104,10 +104,10 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
     }
 
     @Override
-    public void acceptInvitation(String sender, String receiver) {     
-//        dataBaseConnection.setPlayerInGame(sender,receiver);
+    public void acceptInvitation(String sender, String receiver) {
+        dataBaseConnection.setPlayerInGame(sender, receiver);
         ClientInt sendClient = clients.get(sender);
-        gameStateMap.put(sender, new GameState(receiver));   
+        gameStateMap.put(sender, new GameState(receiver));
         try {
             sendClient.acceptInvitation(sender, receiver);
         } catch (RemoteException ex) {

@@ -1,7 +1,7 @@
 package gamestatexml;
 
-import commen.SavedGameState;
-import commen.Game;
+import common.SavedGameState;
+import common.Game;
 import java.io.File;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

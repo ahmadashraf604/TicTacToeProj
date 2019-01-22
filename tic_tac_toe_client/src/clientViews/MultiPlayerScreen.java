@@ -1,6 +1,6 @@
 package clientViews;
 
-import commen.Player;
+import common.Player;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -547,13 +547,19 @@ public class MultiPlayerScreen extends AnchorPane {
                 });
                 game.setFitWidth(18.0);
                 game.setFitHeight(17.0);
-                game.setImage(new Image(getClass().getResourceAsStream("/images/game.png")));
-                game.setOnMouseClicked((MouseEvent event) -> {
-                    if (controller.sendInvition(player.getUsername())) {
-                        game.setImage(new Image(getClass().getResourceAsStream("/images/chatY.png")));
-
-                    }
-                });
+                if (!player.isInGame()) {
+                    game.setImage(new Image(getClass().getResourceAsStream("/images/game.png")));
+                    game.setOnMouseClicked((MouseEvent event) -> {
+                        controller.sendInvition(player.getUsername());
+                        
+                    });
+                }else{
+                    game.setImage(new Image(getClass().getResourceAsStream("/images/user.png")));
+                    game.setOnMouseClicked((MouseEvent event) -> {
+                        controller.makeAlert("Error", "you can not play with "+
+                                player.getUsername()+" now");
+                    });
+                }
 
                 setGraphic(hbox);
             }

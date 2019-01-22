@@ -1,6 +1,6 @@
 package clientViews;
 
-import commen.Player;
+import common.Player;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;

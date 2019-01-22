@@ -5,7 +5,7 @@
  */
 package tic_tac_toe_client;
 
-import commen.ClientInt;
+import common.ClientInt;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import javafx.application.Platform;

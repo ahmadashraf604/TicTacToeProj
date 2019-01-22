@@ -5,14 +5,14 @@
  */
 package model;
 
-import commen.Chat;
-import commen.ClientInt;
-import commen.Player;
-import commen.ServerInt;
-import commen.Game;
-import commen.Messages;
+import common.Chat;
+import common.ClientInt;
+import common.Player;
+import common.ServerInt;
+import common.Game;
+import common.Messages;
 import gamestatexml.JAXBUtils;
-import commen.SavedGameState;
+import common.SavedGameState;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -75,7 +75,19 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
 
     @Override
     public List<Player> getActivePlayer() {
-        return dataBaseConnection.getActivePlayers();
+        List<Player> activePlayers = dataBaseConnection.getActivePlayers();
+        activePlayers.forEach((player) -> {
+            gameStateMap.forEach((playerName, board) -> {
+                if(player.getUsername().equals(playerName) ||
+                        player.getUsername().equals(board.getRecriver())) {
+                    player.setInGame(true);
+                    System.err.println(player.getUsername());
+                }else{
+                   player.setInGame(false);  
+                }
+            });
+        });
+        return activePlayers;
     }
 
     @Override
@@ -93,12 +105,8 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
         ClientInt recieverClient = clients.get(reciever);
         if (recieverClient != null) {
             try {
-                if (recieverClient.receiveInvition(sender, reciever)) {
-                    gameStateMap.put(sender, new GameState());
-                    return true;
-                }else{
-                    return false;
-                }
+                recieverClient.receiveInvition(sender, reciever);
+                return true;
             } catch (RemoteException ex) {
                 return false;
             }
@@ -110,7 +118,7 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
     @Override
     public void acceptInvitation(String sender, String reciever) {
         ClientInt sendClient = clients.get(sender);
-        gameStateMap.put(sender, new GameState());
+        gameStateMap.put(sender, new GameState(reciever));
         try {
             sendClient.acceptInvitation(sender, reciever);
         } catch (RemoteException ex) {

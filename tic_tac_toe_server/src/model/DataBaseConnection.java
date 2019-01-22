@@ -5,7 +5,7 @@
  */
 package model;
 
-import commen.Player;
+import common.Player;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

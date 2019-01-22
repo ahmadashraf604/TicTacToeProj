@@ -1,6 +1,6 @@
 package clientViews;
 
-import commen.Game;
+import common.Game;
 import java.util.List;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;

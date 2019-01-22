@@ -13,7 +13,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.util.Callback;
-import commen.Player;
+import common.Player;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;

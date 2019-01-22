@@ -75,19 +75,7 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
 
     @Override
     public List<Player> getActivePlayer() {
-        List<Player> activePlayers = dataBaseConnection.getActivePlayers();
-        activePlayers.forEach((player) -> {
-            gameStateMap.forEach((playerName, board) -> {
-                if(player.getUsername().equals(playerName) ||
-                        player.getUsername().equals(board.getRecriver())) {
-                    player.setInGame(true);
-                    System.err.println(player.getUsername());
-                }else{
-                   player.setInGame(false);  
-                }
-            });
-        });
-        return activePlayers;
+        return dataBaseConnection.getActivePlayers();
     }
 
     @Override
@@ -101,11 +89,11 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
     }
 
     @Override
-    public boolean sendInvition(String sender, String reciever) {
-        ClientInt recieverClient = clients.get(reciever);
-        if (recieverClient != null) {
+    public boolean sendInvition(String sender, String receiver) {
+        ClientInt receiverClient = clients.get(receiver);
+        if (receiverClient != null) {
             try {
-                recieverClient.receiveInvition(sender, reciever);
+                receiverClient.receiveInvition(sender, receiver);
                 return true;
             } catch (RemoteException ex) {
                 return false;
@@ -116,36 +104,37 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
     }
 
     @Override
-    public void acceptInvitation(String sender, String reciever) {
+    public void acceptInvitation(String sender, String receiver) {     
+//        dataBaseConnection.setPlayerInGame(sender,receiver);
         ClientInt sendClient = clients.get(sender);
-        gameStateMap.put(sender, new GameState(reciever));
+        gameStateMap.put(sender, new GameState(receiver));   
         try {
-            sendClient.acceptInvitation(sender, reciever);
+            sendClient.acceptInvitation(sender, receiver);
         } catch (RemoteException ex) {
             Logger.getLogger(ServerImplemention.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public void refuseInvitation(String sender, String reciever) {
+    public void refuseInvitation(String sender, String receiver) {
         ClientInt sendClient = clients.get(sender);
         try {
-            sendClient.refuseInvitation(sender, reciever);
+            sendClient.refuseInvitation(sender, receiver);
         } catch (RemoteException ex) {
             Logger.getLogger(ServerImplemention.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public void sendGameCell(String sender, String reciever, int rowIndex, int columnIndex, char symbol) {
-        if (reciever != null && sender != null) {
+    public void sendGameCell(String sender, String receiver, int rowIndex, int columnIndex, char symbol) {
+        if (receiver != null && sender != null) {
             try {
                 ClientInt senderClient = clients.get(sender);
-                ClientInt recieverClient = clients.get(reciever);
+                ClientInt receiverClient = clients.get(receiver);
                 if (senderClient == null) {
-                    recieverClient.hundleExcptionsCases("lose Connection",
+                    receiverClient.hundleExcptionsCases("lose Connection",
                             "Unfortionately your friend logout for now ,please try play with other friend");
-                } else if (recieverClient == null) {
+                } else if (receiverClient == null) {
                     senderClient.hundleExcptionsCases("lose Connection",
                             "Unfortionately your friend logout for now ,please try play with other friend");
                 } else {
@@ -158,7 +147,7 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
                         if (symbol == 'x') {
                             savedGameState.setUserName(sender);
                         } else {
-                            savedGameState.setUserName(reciever);
+                            savedGameState.setUserName(receiver);
                         }
                         savedGameState.setRowPosition(rowIndex);
                         savedGameState.setColPosition(columnIndex);
@@ -173,46 +162,46 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
                             //recording the game
                             if (game != null) {
                                 game.setResult(sender);
-                                saveXmlInFile(sender, reciever);
+                                saveXmlInFile(sender, receiver);
                             }
                             senderClient.alertWinner();
                             dataBaseConnection.incrementPointsWin(sender);
-                            recieverClient.alertLosser();
+                            receiverClient.alertLosser();
                         } else if (gameBoard.isDraw()) {
                             //recording the game
                             if (game != null) {
                                 game.setResult("Draw");
-                                saveXmlInFile(sender, reciever);
+                                saveXmlInFile(sender, receiver);
                             }
                             senderClient.alertDrawen();
-                            recieverClient.alertDrawen();
+                            receiverClient.alertDrawen();
                             dataBaseConnection.incrementPointsDraw(sender);
-                            dataBaseConnection.incrementPointsDraw(reciever);
+                            dataBaseConnection.incrementPointsDraw(receiver);
                         }
                     } else if (symbol == 'o') {
                         if (gameBoard.isWin(symbol)) {
                             //recording the game
                             if (game != null) {
-                                game.setResult(reciever);
-                                saveXmlInFile(sender, reciever);
+                                game.setResult(receiver);
+                                saveXmlInFile(sender, receiver);
                             }
-                            recieverClient.alertWinner();
+                            receiverClient.alertWinner();
                             senderClient.alertLosser();
-                            dataBaseConnection.incrementPointsWin(reciever);
+                            dataBaseConnection.incrementPointsWin(receiver);
                         } else if (gameBoard.isDraw()) {
                             //recording the game
                             if (game != null) {
                                 game.setResult("Draw");
-                                saveXmlInFile(sender, reciever);
+                                saveXmlInFile(sender, receiver);
                             }
                             senderClient.alertDrawen();
-                            recieverClient.alertDrawen();
+                            receiverClient.alertDrawen();
                             dataBaseConnection.incrementPointsDraw(sender);
-                            dataBaseConnection.incrementPointsDraw(reciever);
+                            dataBaseConnection.incrementPointsDraw(receiver);
                         }
                     }
                     senderClient.recieveGameCell(rowIndex, columnIndex, symbol);
-                    recieverClient.recieveGameCell(rowIndex, columnIndex, symbol);
+                    receiverClient.recieveGameCell(rowIndex, columnIndex, symbol);
                 }
             } catch (RemoteException ex) {
                 Logger.getLogger(ServerImplemention.class.getName()).log(Level.SEVERE, null, ex);
@@ -220,10 +209,10 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
         }
     }
 
-    private void saveXmlInFile(String sender, String reciever) {
-        xmlUtils.generateXml(game, sender, reciever);
-        String fileName = "./" + sender + "&" + reciever + "Xml" + ".xml";
-        dataBaseConnection.setRecordName(sender, reciever, fileName);
+    private void saveXmlInFile(String sender, String receiver) {
+        xmlUtils.generateXml(game, sender, receiver);
+        String fileName = "./" + sender + "&" + receiver + "Xml" + ".xml";
+        dataBaseConnection.setRecordName(sender, receiver, fileName);
     }
 
     @Override

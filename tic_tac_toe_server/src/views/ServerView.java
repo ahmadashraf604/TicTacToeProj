@@ -25,6 +25,7 @@ import tic_tac_toe_server.Tic_tac_toe_server;
 public class ServerView extends AnchorPane {
 
     protected final ImageView imageView;
+    protected final ImageView refreshImageView;
     protected final ImageView imageView0;
     protected final Label label;
     protected final Label label0;
@@ -42,6 +43,7 @@ public class ServerView extends AnchorPane {
         this.conroller = conroller;
 
         imageView = new ImageView();
+        refreshImageView = new ImageView();
         imageView0 = new ImageView();
         label = new Label();
         label0 = new Label();
@@ -58,6 +60,15 @@ public class ServerView extends AnchorPane {
         setPrefWidth(500.0);
         setStyle("-fx-background-color: #2c3e50;");
 
+        refreshImageView.setFitHeight(305.0);
+        refreshImageView.setFitWidth(30.0);
+        refreshImageView.setLayoutX(240.0);
+        refreshImageView.setLayoutY(5.0);
+        refreshImageView.setPickOnBounds(true);
+        refreshImageView.setPreserveRatio(true);
+        refreshImageView.setImage(new Image(getClass().getResourceAsStream("/images/refresh.png")));
+        refreshImageView.setOnMouseClicked((e)->displayPlayerList());
+
         imageView.setFitHeight(296.0);
         imageView.setFitWidth(304.0);
         imageView.setLayoutX(-1.0);
@@ -65,7 +76,6 @@ public class ServerView extends AnchorPane {
         imageView.setOpacity(0.13);
         imageView.setPickOnBounds(true);
         imageView.setPreserveRatio(true);
-
         imageView.setImage(new Image(getClass().getResourceAsStream("/images/background.png")));
 
         displayPlayerList();
@@ -154,6 +164,7 @@ public class ServerView extends AnchorPane {
         line.setStrokeWidth(3.0);
 
         getChildren().add(imageView);
+        getChildren().add(refreshImageView);
         getChildren().add(imageView0);
         getChildren().add(label);
         getChildren().add(label0);

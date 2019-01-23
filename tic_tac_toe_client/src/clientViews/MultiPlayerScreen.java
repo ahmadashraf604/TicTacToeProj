@@ -144,7 +144,7 @@ public class MultiPlayerScreen extends AnchorPane {
         titleInfoHBox.setSpacing(10.0);
 
         ProfileHBox.setPrefHeight(30.0);
-        ProfileHBox.setPrefWidth(130.0);
+        ProfileHBox.setPrefWidth(250.0);
         ProfileHBox.setSpacing(6.0);
 
         profileImageView.setFitHeight(30.0);
@@ -623,6 +623,7 @@ public class MultiPlayerScreen extends AnchorPane {
 
     public void endGame(int score) {
         myScoreValueLabel.setText(score + "");
+        otherPlayerName.setText("");
         recordImageView.setImage(new Image(getClass().getResourceAsStream("/images/record.png")));
         displayPlayerList();
         if (gridPane != null) {

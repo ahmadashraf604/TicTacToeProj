@@ -214,7 +214,6 @@ public class Tic_tac_toe_client extends Application {
 
     public boolean receiveInvition(String sender, String reciever) {
         boolean invitationState = false;
-
         if (!player.isInGame()) {
             this.isBeginer = false;
             this.sender = sender;
@@ -224,14 +223,22 @@ public class Tic_tac_toe_client extends Application {
             Platform.runLater(() -> {
                 if (makeInfoAlert("Playing invitation", text)) {
                     try {
-                        serverInt.acceptInvitation(sender, reciever);
-                        multiPlayerScreen.startGame(sender);
+                        if (serverInt.isPlayerOnline(sender)) {
+                            serverInt.acceptInvitation(sender, reciever);
+                            multiPlayerScreen.startGame(sender);
+                        } else {
+                            client.hundleExcptionsCases("Error", "Sorry " + sender + " is offline now!");
+                        }
                     } catch (RemoteException ex) {
                         Logger.getLogger(Tic_tac_toe_client.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
                     try {
-                        serverInt.refuseInvitation(sender, reciever);
+                        if (serverInt.isPlayerOnline(sender)) {
+                            serverInt.refuseInvitation(sender, reciever);
+                        } else {
+                            client.hundleExcptionsCases("Error", "Sorry " + sender + " is offline now!");
+                        }
                     } catch (RemoteException ex) {
                         Logger.getLogger(Tic_tac_toe_client.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -515,7 +522,10 @@ public class Tic_tac_toe_client extends Application {
     }
 
     void refuseInvitation(String sender, String reciever) {
-        makeAlert("refusing", "your friend does not accept you invitation \n please try again");
+        Platform.runLater(() -> {
+            makeAlert("refusing", "your friend does not accept you invitation \n please try again");
+            multiPlayerScreen.setIsInvitationBtnClicked();
+        });
     }
 
     void setIsRecording() {

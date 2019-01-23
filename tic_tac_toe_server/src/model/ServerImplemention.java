@@ -92,11 +92,11 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
             } catch (RemoteException ex) {
                 System.out.println("the user is not found");
             }
-            clients.remove(username);
-            dataBaseConnection.logout(username);
-            controller.displayPlayerList();
-            renewActivePlayer();
         });
+        clients.remove(username);
+        dataBaseConnection.logout(username);
+        controller.displayPlayerList();
+        renewActivePlayer();
     }
 
     @Override
@@ -136,13 +136,16 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
 
     @Override
     public void acceptInvitation(String sender, String receiver) {
-        dataBaseConnection.setPlayerInGame(sender, receiver);
         ClientInt sendClient = clients.get(sender);
-        gameStateMap.put(sender, new GameState(receiver));
-        try {
-            sendClient.acceptInvitation(sender, receiver);
-        } catch (RemoteException ex) {
-            Logger.getLogger(ServerImplemention.class.getName()).log(Level.SEVERE, null, ex);
+//        System.out.println(sendClient);
+        if (sendClient != null) {
+            dataBaseConnection.setPlayerInGame(sender, receiver);
+            gameStateMap.put(sender, new GameState(receiver));
+            try {
+                sendClient.acceptInvitation(sender, receiver);
+            } catch (RemoteException ex) {
+                Logger.getLogger(ServerImplemention.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -348,6 +351,11 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
     @Override
     public boolean checkIfActive(String username) throws RemoteException {
         return dataBaseConnection.isNotActive(username);
+    }
+
+    @Override
+    public boolean isPlayerOnline(String username) {
+       return clients.get(username) != null;
     }
 
 }

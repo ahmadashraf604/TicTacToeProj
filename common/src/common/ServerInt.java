@@ -8,7 +8,7 @@ public interface ServerInt extends Remote {
     void register(String username, ClientInt clientRef) throws RemoteException;
 
     void unRegister(String username) throws RemoteException;
-    
+
     public boolean checkIfActive(String username) throws RemoteException;
 
     List<Player> getActivePlayer() throws RemoteException;
@@ -34,4 +34,6 @@ public interface ServerInt extends Remote {
     public void sendMsg(String username, String receiverUsername, String text) throws RemoteException;
 
     public Player getPlayer(String username) throws RemoteException;
+
+    public boolean isPlayerOnline(String username) throws RemoteException;
 }

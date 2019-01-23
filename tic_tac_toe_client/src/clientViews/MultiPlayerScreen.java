@@ -87,6 +87,7 @@ public class MultiPlayerScreen extends AnchorPane {
     int rowIndex = 0;
     int columnIndex = 0;
     char cell[][] = new char[3][3];
+    boolean isInvitationBtnClicked = false;
 
     public MultiPlayerScreen(Stage stage, Tic_tac_toe_client controller) {
 
@@ -563,8 +564,11 @@ public class MultiPlayerScreen extends AnchorPane {
                     active.setImage(new Image(getClass().getResourceAsStream("/images/dot.png")));
                     game.setImage(new Image(getClass().getResourceAsStream("/images/game.png")));
                     game.setOnMouseClicked((MouseEvent event) -> {
-                        controller.sendInvition(player.getUsername());
-                        controller.makeAlert("waiting", "Please wait until the other respond");
+                        if (!isInvitationBtnClicked) {
+                            isInvitationBtnClicked = true;
+                            controller.sendInvition(player.getUsername());
+                            controller.makeAlert("waiting", "Please wait until the other respond");
+                        }
                     });
                 }
                 setGraphic(hbox);
@@ -623,6 +627,7 @@ public class MultiPlayerScreen extends AnchorPane {
         displayPlayerList();
         if (gridPane != null) {
             //here we should delete gride pane 
+            isInvitationBtnClicked = false;
             hBoxGridPane.getChildren().remove(gridPane);
             hBoxGridPane.getChildren().add(backgroundImageView);
         }
@@ -634,5 +639,9 @@ public class MultiPlayerScreen extends AnchorPane {
 
     public void setOtherPlayerName(String playerName) {
         otherPlayerName.setText(" VS " + playerName);
+    }
+    
+    public void setIsInvitationBtnClicked(){
+        isInvitationBtnClicked = false;
     }
 }

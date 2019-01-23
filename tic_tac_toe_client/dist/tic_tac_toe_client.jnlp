@@ -9,8 +9,18 @@
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
     <jar href="lib\common.jar" size="10923" download="eager" />
+<<<<<<< HEAD
+    <jar href="lib\dsn.jar" size="19171" download="eager" />
+    <jar href="lib\gimap.jar" size="14769" download="eager" />
+    <jar href="lib\mail.jar" size="521000" download="eager" />
+    <jar href="lib\mailapi.jar" size="279893" download="eager" />
+    <jar href="lib\pop3.jar" size="44405" download="eager" />
+    <jar href="lib\smtp.jar" size="52869" download="eager" />
+    <jar href="tic_tac_toe_client.jar" size="171477" download="eager" />
+=======
     <jar href="lib\mail.jar" size="666983" download="eager" />
     <jar href="tic_tac_toe_client.jar" size="172652" download="eager" />
+>>>>>>> 11d9f359822397427835fd57988f856a9913a445
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="tic_tac_toe_client" >
     <param name="requiredFXVersion" value="8.0+"/>

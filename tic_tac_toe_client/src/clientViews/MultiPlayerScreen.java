@@ -40,6 +40,7 @@ public class MultiPlayerScreen extends AnchorPane {
     protected final HBox tiitleInfoHBox;
     protected final HBox ProfileHBox;
     protected final Label usernameLabel;
+    protected final Label otherPlayerName;
     protected final HBox scoreHBox;
     protected final Label scoreLabel;
     protected final Label myScoreValueLabel;
@@ -97,6 +98,7 @@ public class MultiPlayerScreen extends AnchorPane {
         tiitleInfoHBox = new HBox();
         ProfileHBox = new HBox();
         usernameLabel = new Label();
+        otherPlayerName = new Label();
         scoreHBox = new HBox();
         scoreLabel = new Label();
         myScoreValueLabel = new Label();
@@ -154,15 +156,20 @@ public class MultiPlayerScreen extends AnchorPane {
         usernameLabel.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
         usernameLabel.setFont(new Font(20.0));
 
+        otherPlayerName.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
+        otherPlayerName.setFont(new Font(20.0));
+
         scoreHBox.setPrefWidth(160.0);
 
         scoreLabel.setPrefHeight(30.0);
         scoreLabel.setPrefWidth(71.0);
+        //scoreLabel.setLayoutX(34.0);
         scoreLabel.setText("Score :");
         scoreLabel.setTextFill(javafx.scene.paint.Color.valueOf("#edcd58"));
         scoreLabel.setFont(new Font(20.0));
 
         myScoreValueLabel.setPrefHeight(30.0);
+        myScoreValueLabel.setLayoutX(3.0);
         myScoreValueLabel.setText(controller.getPlayer().getPoints() + "");
         myScoreValueLabel.setTextFill(javafx.scene.paint.Color.valueOf("#edcd58"));
         myScoreValueLabel.setFont(new Font(20.0));
@@ -283,6 +290,7 @@ public class MultiPlayerScreen extends AnchorPane {
 
         ProfileHBox.getChildren().add(profileImageView);
         ProfileHBox.getChildren().add(usernameLabel);
+        ProfileHBox.getChildren().add(otherPlayerName);
         tiitleInfoHBox.getChildren().add(ProfileHBox);
         scoreHBox.getChildren().add(scoreLabel);
         scoreHBox.getChildren().add(myScoreValueLabel);
@@ -547,6 +555,7 @@ public class MultiPlayerScreen extends AnchorPane {
                     active.setImage(new Image(getClass().getResourceAsStream("/images/dotY.png")));
                     game.setImage(new Image(getClass().getResourceAsStream("/images/gameY.png")));
                     game.setOnMouseClicked((MouseEvent event) -> {
+
                         controller.makeAlert("Error", "you can not play with "
                                 + player.getUsername() + " now");
                     });
@@ -616,5 +625,9 @@ public class MultiPlayerScreen extends AnchorPane {
             hBoxGridPane.getChildren().remove(gridPane);
             hBoxGridPane.getChildren().add(backgroundImageView);
         }
+    }
+
+    public Label getOtherPlayerNameLabel() {
+        return this.otherPlayerName;
     }
 }

@@ -88,6 +88,24 @@ public class DataBaseConnection {
         return false;
     }
 
+    public boolean setPlayerInGame(String sender, String receiver) {
+        try {
+            return !(statement.execute("UPDATE players SET active = 2 WHERE (username = '" + sender + "') or (username = '" + receiver + "')"));
+        } catch (SQLException ex) {
+            Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public boolean setPlayerOutGame(String sender, String receiver) {
+        try {
+            return !(statement.execute("UPDATE players SET active = 1 WHERE (username = '" + sender + "') or (username = '" + receiver + "')"));
+        } catch (SQLException ex) {
+            Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
     public boolean logout(String username) {
         try {
             return !(statement.execute("UPDATE players SET active = 0 WHERE (username = '" + username + "')"));
@@ -108,10 +126,18 @@ public class DataBaseConnection {
                 player.setPassword(resultSet.getString("password"));
                 player.setEmail(resultSet.getString("email"));
                 player.setPoints(resultSet.getInt("points"));
-                if (resultSet.getInt("active") == 0) {
-                    player.setIsActive(false);
-                } else {
-                    player.setIsActive(true);
+                switch (resultSet.getInt("active")) {
+                    case 0:
+                        player.setIsActive(false);
+                        player.setInGame(false);
+                        break;
+                    case 1:
+                        player.setIsActive(true);
+                        player.setInGame(false);
+                        break;
+                    case 2:
+                        player.setInGame(true);
+                        break;
                 }
                 return player;
             }
@@ -125,7 +151,7 @@ public class DataBaseConnection {
         List<Player> players = new ArrayList<>();
         try {
             ResultSet resultSet = statement.executeQuery(
-                    "SELECT * FROM players where active = 1 order by points DESC");
+                    "SELECT * FROM players where active != 0 order by points DESC");
             while (resultSet.next()) {
                 Player player = new Player();
                 player.setId(resultSet.getInt("idplayer"));
@@ -133,7 +159,11 @@ public class DataBaseConnection {
                 player.setEmail(resultSet.getString("email"));
                 player.setPoints(resultSet.getInt("points"));
                 player.setIsActive(true);
-
+                if (resultSet.getInt("active") == 2) {
+                    player.setInGame(true);
+                } else {
+                    player.setInGame(false);
+                }
                 players.add(player);
             }
         } catch (SQLException ex) {
@@ -157,6 +187,11 @@ public class DataBaseConnection {
                     player.setIsActive(false);
                 } else {
                     player.setIsActive(true);
+                }
+                if (resultSet.getInt("active") == 2) {
+                    player.setInGame(true);
+                } else {
+                    player.setInGame(false);
                 }
                 players.add(player);
             }
@@ -248,5 +283,17 @@ public class DataBaseConnection {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return secondUserName;
+    }
+
+    int getPlayerNum() {
+        try {
+            ResultSet resultSet = statement.executeQuery("SELECT count(*) FROM players");
+            if (resultSet.next()) {
+                return resultSet.getInt(0);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
     }
 }

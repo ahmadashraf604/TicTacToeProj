@@ -226,4 +226,8 @@ public class ServerView extends AnchorPane {
             }
         }
     }
+    
+    public void renewPlayerNumber(int playerNum){
+        playerNumbers.setText(playerNum+ "");
+    }
 }

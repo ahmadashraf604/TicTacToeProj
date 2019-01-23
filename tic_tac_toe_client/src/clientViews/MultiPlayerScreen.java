@@ -341,6 +341,8 @@ public class MultiPlayerScreen extends AnchorPane {
         } else {
             hBoxGridPane.getChildren().remove(backgroundImageView);
         }
+        //to auto refresh the list 
+        displayPlayerList();
         columnConstraints = new ColumnConstraints();
         columnConstraints0 = new ColumnConstraints();
         columnConstraints1 = new ColumnConstraints();
@@ -525,12 +527,6 @@ public class MultiPlayerScreen extends AnchorPane {
             super.updateItem(player, empty);
 
             if (player != null) {
-                if (player.isIsActive()) {
-                    active.setImage(new Image(getClass().getResourceAsStream("/images/dot.png")));
-
-                } else {
-                    active.setImage(new Image(getClass().getResourceAsStream("/images/dotB.png")));
-                }
                 active.setFitWidth(7.0);
                 active.setFitHeight(7.0);
                 double activeY = hbox.getHeight() / 2 + 5;
@@ -547,20 +543,21 @@ public class MultiPlayerScreen extends AnchorPane {
                 });
                 game.setFitWidth(18.0);
                 game.setFitHeight(17.0);
-                if (!player.isInGame()) {
+                if (player.isInGame()) {
+                    active.setImage(new Image(getClass().getResourceAsStream("/images/dotY.png")));
+                    game.setImage(new Image(getClass().getResourceAsStream("/images/gameY.png")));
+                    game.setOnMouseClicked((MouseEvent event) -> {
+                        controller.makeAlert("Error", "you can not play with "
+                                + player.getUsername() + " now");
+                    });
+                } else {
+                    active.setImage(new Image(getClass().getResourceAsStream("/images/dot.png")));
                     game.setImage(new Image(getClass().getResourceAsStream("/images/game.png")));
                     game.setOnMouseClicked((MouseEvent event) -> {
                         controller.sendInvition(player.getUsername());
-                        
-                    });
-                }else{
-                    game.setImage(new Image(getClass().getResourceAsStream("/images/user.png")));
-                    game.setOnMouseClicked((MouseEvent event) -> {
-                        controller.makeAlert("Error", "you can not play with "+
-                                player.getUsername()+" now");
+                        controller.makeAlert("waiting", "Please wait until the other respond");
                     });
                 }
-
                 setGraphic(hbox);
             }
         }
@@ -611,7 +608,13 @@ public class MultiPlayerScreen extends AnchorPane {
         textArea.appendText(message + "\n");
     }
 
-    public void updateScore(int score) {
+    public void endGame(int score) {
         myScoreValueLabel.setText(score + "");
+        displayPlayerList();
+        if (gridPane != null) {
+            //here we should delete gride pane 
+            hBoxGridPane.getChildren().remove(gridPane);
+            hBoxGridPane.getChildren().add(backgroundImageView);
+        }
     }
 }

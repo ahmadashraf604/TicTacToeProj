@@ -34,7 +34,7 @@ public class ClientImplemention extends UnicastRemoteObject implements ClientInt
 
     @Override
     public void refuseInvitation(String sender, String reciever) {
-        System.out.println("request refuse");
+        controller.refuseInvitation(sender, reciever);
     }
 
     @Override

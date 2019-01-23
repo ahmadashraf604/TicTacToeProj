@@ -85,7 +85,12 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
 
     @Override
     public boolean signup(Player player) {
-        return dataBaseConnection.registerPlayer(player);
+        if (dataBaseConnection.registerPlayer(player)) {
+            controller.renewPlayerNumber(dataBaseConnection.getPlayerNum());
+            return true;
+        }
+        return false;
+
     }
 
     @Override
@@ -152,13 +157,15 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
                         savedGameState.setRowPosition(rowIndex);
                         savedGameState.setColPosition(columnIndex);
                         savedGameState.setSymbol(symbol);
-                        System.err.println(rowIndex + " " + columnIndex + " " + symbol);
-                        System.err.println(savedGameState.getRowPosition() + " " + savedGameState.getColPosition() + " " + savedGameState.getSymbol());
                         game.add(savedGameState);
                     }
-
+                    //check whose win
                     if (symbol == 'x') {
                         if (gameBoard.isWin(symbol)) {
+                            //make player is active not in game
+                            dataBaseConnection.setPlayerOutGame(sender, receiver);
+                            //delete the game board from hash map
+                            gameStateMap.remove(sender);
                             //recording the game
                             if (game != null) {
                                 game.setResult(sender);
@@ -168,6 +175,10 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
                             dataBaseConnection.incrementPointsWin(sender);
                             receiverClient.alertLosser();
                         } else if (gameBoard.isDraw()) {
+                            //make player is active not in game
+                            dataBaseConnection.setPlayerOutGame(sender, receiver);
+                            //delete the game board from hash map
+                            gameStateMap.remove(sender);
                             //recording the game
                             if (game != null) {
                                 game.setResult("Draw");
@@ -180,6 +191,10 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
                         }
                     } else if (symbol == 'o') {
                         if (gameBoard.isWin(symbol)) {
+                            //make player is active not in game
+                            dataBaseConnection.setPlayerOutGame(sender, receiver);
+                            //delete the game board from hash map
+                            gameStateMap.remove(sender);
                             //recording the game
                             if (game != null) {
                                 game.setResult(receiver);
@@ -189,6 +204,10 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
                             senderClient.alertLosser();
                             dataBaseConnection.incrementPointsWin(receiver);
                         } else if (gameBoard.isDraw()) {
+                            //make player is active not in game
+                            dataBaseConnection.setPlayerOutGame(sender, receiver);
+                            //delete the game board from hash map
+                            gameStateMap.remove(sender);
                             //recording the game
                             if (game != null) {
                                 game.setResult("Draw");

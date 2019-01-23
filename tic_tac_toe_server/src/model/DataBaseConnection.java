@@ -58,7 +58,7 @@ public class DataBaseConnection {
         return null;
     }
 
-        public boolean isNotActive(String username) {
+    public boolean isNotActive(String username) {
         try {
             ResultSet resultSet = statement.executeQuery(
                     "SELECT * FROM players where (username='" + username + "' AND  active = '0' )");
@@ -76,7 +76,7 @@ public class DataBaseConnection {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-         return false;
+        return false;
     }
 
     private boolean setActive(String username) {
@@ -91,6 +91,15 @@ public class DataBaseConnection {
     public boolean setPlayerInGame(String sender, String receiver) {
         try {
             return !(statement.execute("UPDATE players SET active = 2 WHERE (username = '" + sender + "') or (username = '" + receiver + "')"));
+        } catch (SQLException ex) {
+            Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public boolean setPlayerOutGame(String sender, String receiver) {
+        try {
+            return !(statement.execute("UPDATE players SET active = 1 WHERE (username = '" + sender + "') or (username = '" + receiver + "')"));
         } catch (SQLException ex) {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -142,7 +151,7 @@ public class DataBaseConnection {
         List<Player> players = new ArrayList<>();
         try {
             ResultSet resultSet = statement.executeQuery(
-                    "SELECT * FROM players where active = 1 order by points DESC");
+                    "SELECT * FROM players where active != 0 order by points DESC");
             while (resultSet.next()) {
                 Player player = new Player();
                 player.setId(resultSet.getInt("idplayer"));
@@ -265,5 +274,17 @@ public class DataBaseConnection {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return secondUserName;
+    }
+
+    int getPlayerNum() {
+        try {
+            ResultSet resultSet = statement.executeQuery("SELECT count(*) FROM players");
+            if (resultSet.next()) {
+                return resultSet.getInt(0);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
     }
 }

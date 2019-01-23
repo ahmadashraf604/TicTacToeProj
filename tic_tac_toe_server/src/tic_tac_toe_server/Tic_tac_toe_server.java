@@ -125,4 +125,7 @@ public class Tic_tac_toe_server extends Application {
         }
     }
 
+    public void renewPlayerNumber(int playerNum) {
+        serverView.renewPlayerNumber(playerNum);
+    }
 }

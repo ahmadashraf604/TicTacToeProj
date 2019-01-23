@@ -307,7 +307,7 @@ public class Tic_tac_toe_client extends Application {
             public void run() {
                 makeAlert("Winner", "You Are Winner");
                 player = renewPlayerInfo();
-                multiPlayerScreen.updateScore(player.getPoints());
+                multiPlayerScreen.endGame(player.getPoints());
             }
         });
     }
@@ -316,9 +316,8 @@ public class Tic_tac_toe_client extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                if (makeAlert("Losing", "You Are Lose the Game for Sorry")) {
-//                    startGame();
-                }
+                makeAlert("Losing", "You Are Lose the Game for Sorry");
+                multiPlayerScreen.endGame(player.getPoints());
             }
         });
     }
@@ -329,7 +328,7 @@ public class Tic_tac_toe_client extends Application {
             public void run() {
                 makeAlert("Drawen", "You Are Draw");
                 player = renewPlayerInfo();
-                multiPlayerScreen.updateScore(player.getPoints());
+                multiPlayerScreen.endGame(player.getPoints());
             }
         });
     }
@@ -408,8 +407,9 @@ public class Tic_tac_toe_client extends Application {
     void logoutAbnormal() {
         serverInt = null;
         Platform.runLater(() -> {
-            openLoginScreen();
             //handel an action when server is off
+            makeAlert("Error", "we are sorry server is down please try again");
+            openLoginScreen();
         });
     }
 
@@ -509,6 +509,10 @@ public class Tic_tac_toe_client extends Application {
             setInGame(false);
             return false;
         }
+    }
+
+    void refuseInvitation(String sender, String reciever) {
+        makeAlert("refusing", "your friend does not accept you invitation \n please try again");
     }
 
 }

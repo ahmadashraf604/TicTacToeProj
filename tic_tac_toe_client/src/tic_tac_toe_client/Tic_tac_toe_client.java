@@ -225,7 +225,7 @@ public class Tic_tac_toe_client extends Application {
                 if (makeInfoAlert("Playing invitation", text)) {
                     try {
                         serverInt.acceptInvitation(sender, reciever);
-                        multiPlayerScreen.startGame();
+                        multiPlayerScreen.startGame(sender);
                     } catch (RemoteException ex) {
                         Logger.getLogger(Tic_tac_toe_client.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -263,12 +263,12 @@ public class Tic_tac_toe_client extends Application {
         }
     }
 
-    public void startGame() {
+    public void startGame(String playerName) {
         this.isMyTurn = true;
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                multiPlayerScreen.startGame();
+                multiPlayerScreen.startGame(playerName);
 
             }
         });
@@ -497,10 +497,6 @@ public class Tic_tac_toe_client extends Application {
 
     public void setInGame(boolean inGame) {
         this.inGame = inGame;
-    }
-
-    public void setOtherPlayerName(String playerName) {
-        multiPlayerScreen.getOtherPlayerNameLabel().setText(" VS " + playerName);
     }
 
     private boolean makeInfoAlert(String title, String text) {

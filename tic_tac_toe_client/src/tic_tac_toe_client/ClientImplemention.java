@@ -29,7 +29,7 @@ public class ClientImplemention extends UnicastRemoteObject implements ClientInt
 
     @Override
     public void acceptInvitation(String sender, String reciever) {
-        controller.startGame();
+        controller.startGame(reciever);
     }
 
     @Override

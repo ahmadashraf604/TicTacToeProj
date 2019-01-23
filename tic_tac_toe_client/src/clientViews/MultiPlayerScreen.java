@@ -342,7 +342,8 @@ public class MultiPlayerScreen extends AnchorPane {
         }
     }
 
-    public void startGame() {
+    public void startGame(String playerName) {
+        setOtherPlayerName(playerName);
         if (gridPane != null) {
             //here we should delete gride pane 
             hBoxGridPane.getChildren().remove(gridPane);
@@ -627,7 +628,7 @@ public class MultiPlayerScreen extends AnchorPane {
         }
     }
 
-    public Label getOtherPlayerNameLabel() {
-        return this.otherPlayerName;
+    public void setOtherPlayerName(String playerName) {
+        otherPlayerName.setText(" VS " + playerName);
     }
 }

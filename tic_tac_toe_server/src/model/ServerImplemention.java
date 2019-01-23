@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import jdk.nashorn.internal.ir.BreakNode;
 import tic_tac_toe_server.Tic_tac_toe_server;
 
 /**
@@ -67,10 +68,35 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
 
     @Override
     public void unRegister(String username) {
-        clients.remove(username);
-        dataBaseConnection.logout(username);
-        controller.displayPlayerList();
-        renewActivePlayer();
+        gameStateMap.forEach((sender, board) -> {
+            if (username.equals(sender)) {
+                try {
+                    clients.get(board.getRecriver()).alertWinner();
+                    dataBaseConnection.setPlayerOutGame(sender, board.getRecriver());
+                    gameStateMap.remove(sender);
+
+                } catch (RemoteException ex) {
+                    System.out.println("the user is not found");
+                }
+            } else if (username.equals(board.getRecriver())) {
+                try {
+                    clients.get(sender).alertWinner();
+                    dataBaseConnection.setPlayerOutGame(sender, board.getRecriver());
+                    gameStateMap.remove(sender);
+                } catch (RemoteException ex) {
+                    System.out.println("the user is not found");
+                }
+            }
+            try {
+                clients.get(username).logout();
+            } catch (RemoteException ex) {
+                System.out.println("the user is not found");
+            }
+            clients.remove(username);
+            dataBaseConnection.logout(username);
+            controller.displayPlayerList();
+            renewActivePlayer();
+        });
     }
 
     @Override
@@ -238,10 +264,16 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
     public boolean recordGame(String sender) {
         GameState board = gameStateMap.get(sender);
         if (board != null && !board.getIsRecording()) {
-            board.setIsRecording(true);
-            xmlUtils = new JAXBUtils();
-            game = new Game();
-            return true;
+            try {
+                clients.get(sender).setIsRecording();
+                clients.get(board.getRecriver()).setIsRecording();
+                board.setIsRecording(true);
+                xmlUtils = new JAXBUtils();
+                game = new Game();
+                return true;
+            } catch (RemoteException ex) {
+                return false;
+            }
         } else {
             return false;
         }
@@ -268,12 +300,13 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
     }
 
     @Override
-    public Game getGameRecord(String firstName, String secondName) throws RemoteException {
+    public Game getGameRecord(String firstName, String secondName) {
         Game recorededGame = new Game();
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance((new Class[]{Game.class, SavedGameState.class}));
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            recorededGame = (Game) jaxbUnmarshaller.unmarshal(new File("./" + firstName + "&" + secondName + "Xml" + ".xml"));
+            recorededGame = (Game) jaxbUnmarshaller.unmarshal(
+                    new File(dataBaseConnection.getRecord(firstName, secondName)));
         } catch (JAXBException ex) {
             ex.printStackTrace();
             Logger.getLogger(ServerImplemention.class.getName()).log(Level.SEVERE, null, ex);

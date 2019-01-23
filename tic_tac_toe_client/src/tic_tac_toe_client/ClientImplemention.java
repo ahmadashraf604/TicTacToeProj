@@ -84,4 +84,9 @@ public class ClientImplemention extends UnicastRemoteObject implements ClientInt
     public void hundleExcptionsCases(String title, String description) {
         Platform.runLater(() -> controller.makeAlert(title, description));
     }
+
+    @Override
+    public void setIsRecording() throws RemoteException {
+        controller.setIsRecording();
+    }
 }

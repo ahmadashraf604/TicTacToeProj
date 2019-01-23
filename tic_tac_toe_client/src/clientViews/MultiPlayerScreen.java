@@ -37,7 +37,7 @@ public class MultiPlayerScreen extends AnchorPane {
 
     protected final VBox vBox;
     protected final HBox hBox;
-    protected final HBox tiitleInfoHBox;
+    protected final HBox titleInfoHBox;
     protected final HBox ProfileHBox;
     protected final Label usernameLabel;
     protected final Label otherPlayerName;
@@ -95,7 +95,7 @@ public class MultiPlayerScreen extends AnchorPane {
 
         vBox = new VBox();
         hBox = new HBox();
-        tiitleInfoHBox = new HBox();
+        titleInfoHBox = new HBox();
         ProfileHBox = new HBox();
         usernameLabel = new Label();
         otherPlayerName = new Label();
@@ -138,9 +138,9 @@ public class MultiPlayerScreen extends AnchorPane {
         hBox.setAlignment(javafx.geometry.Pos.CENTER);
         hBox.setSpacing(350.0);
 
-        tiitleInfoHBox.setAlignment(javafx.geometry.Pos.CENTER);
-        tiitleInfoHBox.setPrefWidth(450.0);
-        tiitleInfoHBox.setSpacing(30.0);
+        titleInfoHBox.setAlignment(javafx.geometry.Pos.CENTER);
+        titleInfoHBox.setPrefWidth(450.0);
+        titleInfoHBox.setSpacing(10.0);
 
         ProfileHBox.setPrefHeight(30.0);
         ProfileHBox.setPrefWidth(130.0);
@@ -192,8 +192,8 @@ public class MultiPlayerScreen extends AnchorPane {
         recordImageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if (controller.recordGame()) {
-                    recordImageView.setImage(new Image(getClass().getResourceAsStream("/images/recordRed.png")));
+                if (!controller.recordGame()) {
+                    controller.makeAlert("Tic Tac Toe", "You should start a game first!");
                 }
             }
         });
@@ -291,14 +291,14 @@ public class MultiPlayerScreen extends AnchorPane {
         ProfileHBox.getChildren().add(profileImageView);
         ProfileHBox.getChildren().add(usernameLabel);
         ProfileHBox.getChildren().add(otherPlayerName);
-        tiitleInfoHBox.getChildren().add(ProfileHBox);
+        titleInfoHBox.getChildren().add(ProfileHBox);
         scoreHBox.getChildren().add(scoreLabel);
         scoreHBox.getChildren().add(myScoreValueLabel);
-        tiitleInfoHBox.getChildren().add(scoreHBox);
+        titleInfoHBox.getChildren().add(scoreHBox);
         group.getChildren().add(PlayRecordImageView);
         group.getChildren().add(recordImageView);
-        tiitleInfoHBox.getChildren().add(group);
-        hBox.getChildren().add(tiitleInfoHBox);
+        titleInfoHBox.getChildren().add(group);
+        hBox.getChildren().add(titleInfoHBox);
         group0.getChildren().add(logoutImageView);
         group0.getChildren().add(aboutImageView);
         group0.getChildren().add(refreshImageView);
@@ -555,8 +555,7 @@ public class MultiPlayerScreen extends AnchorPane {
                 if (player.isInGame()) {
                     active.setImage(new Image(getClass().getResourceAsStream("/images/dotY.png")));
                     game.setImage(new Image(getClass().getResourceAsStream("/images/gameY.png")));
-                    game.setOnMouseClicked((MouseEvent event) -> {
-
+                    game.setOnMouseClicked((event) -> {
                         controller.makeAlert("Error", "you can not play with "
                                 + player.getUsername() + " now");
                     });
@@ -620,12 +619,17 @@ public class MultiPlayerScreen extends AnchorPane {
 
     public void endGame(int score) {
         myScoreValueLabel.setText(score + "");
+        recordImageView.setImage(new Image(getClass().getResourceAsStream("/images/record.png")));
         displayPlayerList();
         if (gridPane != null) {
             //here we should delete gride pane 
             hBoxGridPane.getChildren().remove(gridPane);
             hBoxGridPane.getChildren().add(backgroundImageView);
         }
+    }
+
+    public void setRecording() {
+        recordImageView.setImage(new Image(getClass().getResourceAsStream("/images/recordRed.png")));
     }
 
     public void setOtherPlayerName(String playerName) {

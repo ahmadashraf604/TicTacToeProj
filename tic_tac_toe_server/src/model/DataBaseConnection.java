@@ -19,12 +19,13 @@ import java.util.logging.Logger;
 public class DataBaseConnection {
 
     Statement statement;
+    Connection con;
 
     public DataBaseConnection() {
 
         try {
             DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tic-tac-toe", "root", "1529");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tic-tac-toe", "root", "1529");
             statement = con.createStatement();
         } catch (SQLException ex) {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
@@ -150,7 +151,8 @@ public class DataBaseConnection {
     public List<Player> getActivePlayers() {
         List<Player> players = new ArrayList<>();
         try {
-            ResultSet resultSet = statement.executeQuery(
+            Statement stat = con.createStatement();
+            ResultSet resultSet = stat.executeQuery(
                     "SELECT * FROM players where active != 0 order by points DESC");
             while (resultSet.next()) {
                 Player player = new Player();
@@ -223,13 +225,16 @@ public class DataBaseConnection {
         return false;
     }
 
-    public List<String> getAllrecords(String username) {
-        List<String> fileName = new ArrayList<>();
+    public String getRecord(String sender, String receiver) {
+        String fileName = null;
         try {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM recordgame where firstPlayer = '"
-                    + username + "' or secondPlayer = '" + username + "'");
-            while (resultSet.next()) {
-                fileName.add(resultSet.getString("recordName"));
+            ResultSet resultSet = statement.executeQuery(
+                    "SELECT recordName FROM recordgame where (firstPlayer = '"
+                    + sender + "' and secondPlayer = '" + receiver
+                    + "') or (firstPlayer = '" + receiver
+                    + "' and secondPlayer = '" + sender + "');");
+            if (resultSet.next()) {
+                fileName = resultSet.getString("recordName");
             }
         } catch (SQLException ex) {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
@@ -238,18 +243,15 @@ public class DataBaseConnection {
     }
 
     public boolean setRecordName(String firstPlayer, String secondPlayer, String fileName) {
-        boolean flag = false;
         try {
-            flag = !(statement.execute("INSERT INTO recordgame (firstPlayer, secondPlayer, recordName) VALUES ('"
-                    + firstPlayer + "', '" + secondPlayer + "', '" + fileName + "')"));
-            if (!flag) {
-                flag = !(statement.execute("UPDATE recordgame SET recordName = '" + fileName + "' WHERE (firstPlayer = '"
-                        + firstPlayer + "' , secondPlayer = '" + secondPlayer + "')"));
+            if (getRecord(firstPlayer, secondPlayer) == null) {
+                return !(statement.execute("INSERT INTO recordgame (firstPlayer, secondPlayer, recordName) VALUES ('"
+                        + firstPlayer + "', '" + secondPlayer + "', '" + fileName + "')"));
             }
+            return false;
         } catch (SQLException ex) {
-            Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
-        return flag;
     }
 
     public boolean colseServer() {
@@ -278,7 +280,7 @@ public class DataBaseConnection {
                     secondUserName.add(resultSet.getString("secondPlayer"));
                 }
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         }

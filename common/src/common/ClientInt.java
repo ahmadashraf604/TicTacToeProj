@@ -35,4 +35,6 @@ public interface ClientInt extends Remote {
     public void hundleExcptionsCases(String title, String description) throws RemoteException;
 
     public void logout() throws RemoteException;
+
+    public void setIsRecording() throws RemoteException;
 }

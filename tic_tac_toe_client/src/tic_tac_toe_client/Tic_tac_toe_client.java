@@ -518,4 +518,8 @@ public class Tic_tac_toe_client extends Application {
         makeAlert("refusing", "your friend does not accept you invitation \n please try again");
     }
 
+    void setIsRecording() {
+        multiPlayerScreen.setRecording();
+    }
+
 }

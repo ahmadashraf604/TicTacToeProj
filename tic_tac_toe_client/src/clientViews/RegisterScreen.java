@@ -179,10 +179,11 @@ public class RegisterScreen extends AnchorPane {
         signUpLabel2.setTextFill(javafx.scene.paint.Color.valueOf("#666666"));
         signUpLabel2.setFont(new Font(24.0));
 
+        welcomeLabel2.setLayoutX(64.0);
         welcomeLabel2.setLayoutY(118.0);
-        welcomeLabel2.setPrefHeight(60.0);
         welcomeLabel2.setPrefWidth(373.0);
-        welcomeLabel2.setText("Welcome to Tic-tac toe");
+        welcomeLabel2.setPrefHeight(60.0);
+        welcomeLabel2.setText("Welcome to Tic Tac Toe");
         welcomeLabel2.setFont(new Font("System Bold", 32.0));
         welcomeLabel2.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
 

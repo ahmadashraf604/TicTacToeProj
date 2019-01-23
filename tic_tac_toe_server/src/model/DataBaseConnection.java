@@ -24,7 +24,7 @@ public class DataBaseConnection {
 
         try {
             DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tic-tac-toe", "root", "1529");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tic-tac-toe", "root", "1994");
             statement = con.createStatement();
         } catch (SQLException ex) {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
@@ -58,7 +58,7 @@ public class DataBaseConnection {
         return null;
     }
 
-        public boolean isNotActive(String username) {
+    public boolean isNotActive(String username) {
         try {
             ResultSet resultSet = statement.executeQuery(
                     "SELECT * FROM players where (username='" + username + "' AND  active = '0' )");
@@ -76,7 +76,7 @@ public class DataBaseConnection {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-         return false;
+        return false;
     }
 
     private boolean setActive(String username) {
@@ -230,11 +230,20 @@ public class DataBaseConnection {
     public List<String> getAllSecondPlayerNamesInRecords(String username) {
         List<String> secondUserName = new ArrayList<>();
         try {
-            ResultSet resultSet = statement.executeQuery("SELECT secondPlayer FROM recordgame where firstPlayer = '"
-                    + username + "'");
+            /*ResultSet resultSet = statement.executeQuery("SELECT secondPlayer FROM recordgame where firstPlayer = '"
+                    + username + "'");*/
+
+            ResultSet resultSet = statement.executeQuery("SELECT firstPlayer, secondPlayer FROM recordgame where firstPlayer = '"
+                    + username + "' or secondPlayer = '" + username + "'");
+
             while (resultSet.next()) {
-                secondUserName.add(resultSet.getString("secondPlayer"));
+                if (username.equalsIgnoreCase(resultSet.getString("secondPlayer"))) {
+                    secondUserName.add(resultSet.getString("firstPlayer"));
+                } else {
+                    secondUserName.add(resultSet.getString("secondPlayer"));
+                }
             }
+            
         } catch (SQLException ex) {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         }

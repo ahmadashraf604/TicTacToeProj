@@ -202,6 +202,7 @@ public class Tic_tac_toe_client extends Application {
                     if (sendInvition) {
                         this.isMyTurn = true;
                         multiPlayerScreen.startGame();
+                        setOtherPlayerName(reciever);
                         setInGame(true);
                     }
                 } catch (RemoteException ex) {
@@ -219,6 +220,7 @@ public class Tic_tac_toe_client extends Application {
 
     public boolean receiveInvition(String sender, String reciever) {
         boolean invitationState = false;
+        
         if (!isInGame()) {
             this.isBeginer = false;
             this.sender = sender;
@@ -231,6 +233,7 @@ public class Tic_tac_toe_client extends Application {
                     if (makeInfoAlert("Playing invitation", text)) {
                         setInGame(true);
                         multiPlayerScreen.startGame();
+                        setOtherPlayerName(sender);
                         return true;
                     } else {
                         setInGame(false);
@@ -277,6 +280,7 @@ public class Tic_tac_toe_client extends Application {
             @Override
             public void run() {
                 multiPlayerScreen.startGame();
+               
             }
         });
     }
@@ -391,7 +395,7 @@ public class Tic_tac_toe_client extends Application {
     }
 
     public void openOfflineScreen() {
-        offLinePlayeScreen = new OffLinePlayeScreen(this);
+        offLinePlayeScreen = new OffLinePlayeScreen(loginScreen);
         Scene scene = new Scene(offLinePlayeScreen, 900, 500);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -504,6 +508,10 @@ public class Tic_tac_toe_client extends Application {
 
     public void setInGame(boolean inGame) {
         this.inGame = inGame;
+    }
+    
+    public void setOtherPlayerName(String playerName){
+       multiPlayerScreen.getOtherPlayerNameLabel().setText(" VS "+playerName);
     }
 
     private boolean makeInfoAlert(String title, String text) {

@@ -1,7 +1,13 @@
 package clientViews.offlineViews;
 
+import clientViews.LoginScreen;
+import java.util.Optional;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -13,33 +19,35 @@ import static javafx.scene.layout.GridPane.getColumnIndex;
 import static javafx.scene.layout.GridPane.getRowIndex;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import tic_tac_toe_client.Tic_tac_toe_client;
+import javafx.stage.Stage;
 
 public class OffLinePlayeScreen extends AnchorPane {
 
     protected final HBox hBox;
     protected final ImageView bakgroundImageView;
-    protected final GridPane gridPane;
-    protected final ColumnConstraints columnConstraints;
-    protected final ColumnConstraints columnConstraints0;
-    protected final ColumnConstraints columnConstraints1;
-    protected final RowConstraints rowConstraints;
-    protected final RowConstraints rowConstraints0;
-    protected final RowConstraints rowConstraints1;
-    protected final ImageView imageView;
-    protected final ImageView imageView0;
-    protected final ImageView imageView1;
-    protected final ImageView imageView2;
-    protected final ImageView imageView3;
-    protected final ImageView imageView4;
-    protected final ImageView imageView5;
-    protected final ImageView imageView6;
-    protected final ImageView imageView7;
-    protected final HBox hBox0;
+    protected GridPane gridPane;
+    protected ColumnConstraints columnConstraints;
+    protected ColumnConstraints columnConstraints0;
+    protected ColumnConstraints columnConstraints1;
+    protected RowConstraints rowConstraints;
+    protected RowConstraints rowConstraints0;
+    protected RowConstraints rowConstraints1;
+    protected ImageView imageView;
+    protected ImageView imageView0;
+    protected ImageView imageView1;
+    protected ImageView imageView2;
+    protected ImageView imageView3;
+    protected ImageView imageView4;
+    protected ImageView imageView5;
+    protected ImageView imageView6;
+    protected ImageView imageView7;
+    protected HBox hBox0;
     protected final ImageView backImageView;
+    protected final VBox vBox;
     protected final Label label;
-    Tic_tac_toe_client controller;
+    protected final Button playAgainBtn;
     boolean x_Trun = true;
     int rowIndex = 0;
     int columnIndex = 0;
@@ -48,12 +56,115 @@ public class OffLinePlayeScreen extends AnchorPane {
     int cellFallCounter = -1;
     String firstMove = "";
     boolean isEnd = false;
+    LoginScreen loginScreen;
 
-    public OffLinePlayeScreen(Tic_tac_toe_client controller) {
+    public OffLinePlayeScreen(LoginScreen loginScreen) {
 
-        this.controller = controller;
+        this.loginScreen = loginScreen;
         hBox = new HBox();
         bakgroundImageView = new ImageView();
+
+        hBox0 = new HBox();
+        backImageView = new ImageView();
+        vBox = new VBox();
+        label = new Label();
+        playAgainBtn = new Button();
+
+        setMaxHeight(USE_PREF_SIZE);
+        setMaxWidth(USE_PREF_SIZE);
+        setMinHeight(USE_PREF_SIZE);
+        setMinWidth(USE_PREF_SIZE);
+        setPrefHeight(500.0);
+        setPrefWidth(900.0);
+        setStyle("-fx-background-color: #2c3e50");
+
+        AnchorPane.setBottomAnchor(hBox, 30.0);
+        AnchorPane.setLeftAnchor(hBox, 30.0);
+        AnchorPane.setRightAnchor(hBox, 30.0);
+        hBox.setLayoutX(239.5);
+        hBox.setLayoutY(49.5);
+
+        bakgroundImageView.setFitHeight(420.0);
+        bakgroundImageView.setFitWidth(420.0);
+        bakgroundImageView.setOpacity(0.13);
+        bakgroundImageView.setPickOnBounds(true);
+        bakgroundImageView.setPreserveRatio(true);
+        bakgroundImageView.setImage(new Image(getClass().getResourceAsStream("/images/background.png")));
+
+        AnchorPane.setLeftAnchor(hBox0, 30.0);
+        AnchorPane.setRightAnchor(hBox0, 30.0);
+        AnchorPane.setTopAnchor(hBox0, 12.0);
+        hBox0.setLayoutX(30.0);
+        hBox0.setLayoutY(12.0);
+        hBox0.setPrefHeight(30.0);
+        hBox0.setPrefWidth(200.0);
+
+        backImageView.setFitHeight(35.0);
+        backImageView.setFitWidth(30.0);
+        backImageView.setPickOnBounds(true);
+        backImageView.setPreserveRatio(true);
+        backImageView.setImage(new Image(getClass().getResourceAsStream("/images/left-arrow.png")));
+        backImageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                loginScreen.openLoginScreen();
+            }
+        });
+
+        AnchorPane.setLeftAnchor(label, 80.0);
+        AnchorPane.setTopAnchor(label, 178.0);
+        vBox.setAlignment(javafx.geometry.Pos.CENTER);
+        vBox.setLayoutX(30.0);
+        vBox.setLayoutY(54.0);
+        vBox.setPrefHeight(414.0);
+        vBox.setPrefWidth(420.0);
+
+        label.setAlignment(javafx.geometry.Pos.CENTER);
+        label.setContentDisplay(javafx.scene.control.ContentDisplay.CENTER);
+        label.setPrefHeight(168.0);
+        label.setPrefWidth(291.0);
+        label.setText("You are Playing With Very Smart Computer Try To Beat him");
+        label.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        label.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
+        label.setWrapText(true);
+        label.setFont(new Font(24.0));
+
+        playAgainBtn.setMnemonicParsing(false);
+        playAgainBtn.setPrefHeight(25.0);
+        playAgainBtn.setPrefWidth(111.0);
+        playAgainBtn.setStyle("-fx-background-color: #eecf56;");
+        playAgainBtn.setText("Play again");
+        playAgainBtn.setTextFill(javafx.scene.paint.Color.valueOf("#2c3e50"));
+        playAgainBtn.setOnMouseClicked((event) -> {
+            loginScreen.playAgain();
+        });
+
+        hBox.getChildren().add(bakgroundImageView);
+        hBox0.getChildren().add(backImageView);
+        getChildren().add(hBox0);
+        vBox.getChildren().add(label);
+        vBox.getChildren().add(playAgainBtn);
+        getChildren().add(hBox);
+        getChildren().add(vBox);
+        playAgain();
+
+    }
+
+    protected void playAgain() {
+
+        if (gridPane != null) {
+            //here we should delete gride pane 
+            hBox.getChildren().remove(gridPane);
+        }
+
+        if (cell != null) {
+            for (int i = 0; i < cell.length; i++) {
+                for (int j = 0; j < cell.length; j++) {
+                    cell[i][j] = '\0';
+                }
+            }
+        }
+
         gridPane = new GridPane();
         columnConstraints = new ColumnConstraints();
         columnConstraints0 = new ColumnConstraints();
@@ -70,31 +181,7 @@ public class OffLinePlayeScreen extends AnchorPane {
         imageView5 = new ImageView();
         imageView6 = new ImageView();
         imageView7 = new ImageView();
-        hBox0 = new HBox();
-        backImageView = new ImageView();
-        label = new Label();
 
-        setMaxHeight(USE_PREF_SIZE);
-        setMaxWidth(USE_PREF_SIZE);
-        setMinHeight(USE_PREF_SIZE);
-        setMinWidth(USE_PREF_SIZE);
-        setPrefHeight(500.0);
-        setPrefWidth(900.0);
-        setStyle("-fx-background-color: "+controller.SCENE_BACKGROUND);
-
-        AnchorPane.setBottomAnchor(hBox, 30.0);
-        AnchorPane.setLeftAnchor(hBox, 30.0);
-        AnchorPane.setRightAnchor(hBox, 30.0);
-        hBox.setLayoutX(239.5);
-        hBox.setLayoutY(49.5);
-
-        bakgroundImageView.setFitHeight(420.0);
-        bakgroundImageView.setFitWidth(420.0);
-        bakgroundImageView.setOpacity(0.13);
-        bakgroundImageView.setPickOnBounds(true);
-        bakgroundImageView.setPreserveRatio(true);
-        bakgroundImageView.setImage(new Image(getClass().getResourceAsStream("/images/background.png")));
-       
         gridPane.setAlignment(javafx.geometry.Pos.CENTER);
         gridPane.setGridLinesVisible(true);
         gridPane.setMaxHeight(USE_PREF_SIZE);
@@ -103,7 +190,7 @@ public class OffLinePlayeScreen extends AnchorPane {
         gridPane.setMinWidth(USE_PREF_SIZE);
         gridPane.setPrefHeight(420.0);
         gridPane.setPrefWidth(420.0);
-        gridPane.setStyle("-fx-background-color: "+controller.SCENE_FORGROUND);
+        gridPane.setStyle("-fx-background-color: #eecf56; -fx-background-radius: 7;");
 
         columnConstraints.setHgrow(javafx.scene.layout.Priority.SOMETIMES);
         columnConstraints.setMaxWidth(174.0);
@@ -213,39 +300,6 @@ public class OffLinePlayeScreen extends AnchorPane {
         imageView7.setPreserveRatio(true);
         GridPane.setMargin(imageView7, new Insets(10.0, 10.0, 10.0, 20.0));
 
-        AnchorPane.setLeftAnchor(hBox0, 30.0);
-        AnchorPane.setRightAnchor(hBox0, 30.0);
-        AnchorPane.setTopAnchor(hBox0, 12.0);
-        hBox0.setLayoutX(30.0);
-        hBox0.setLayoutY(12.0);
-        hBox0.setPrefHeight(30.0);
-        hBox0.setPrefWidth(200.0);
-
-        backImageView.setFitHeight(35.0);
-        backImageView.setFitWidth(30.0);
-        backImageView.setPickOnBounds(true);
-        backImageView.setPreserveRatio(true);
-        backImageView.setImage(new Image(getClass().getResourceAsStream("/images/left-arrow.png")));
-        backImageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-              controller.openLoginScreen();
-            }
-        });
-
-        AnchorPane.setLeftAnchor(label, 80.0);
-        AnchorPane.setTopAnchor(label, 178.0);
-        label.setLayoutX(80.0);
-        label.setLayoutY(178.0);
-        label.setPrefHeight(171.0);
-        label.setPrefWidth(319.0);
-        label.setText("You are Playing With Very Smart Computer Try To Beat him");
-        label.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
-        label.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
-        label.setWrapText(true);
-        label.setFont(new Font(24.0));
-
-        hBox.getChildren().add(bakgroundImageView);
         gridPane.getColumnConstraints().add(columnConstraints);
         gridPane.getColumnConstraints().add(columnConstraints0);
         gridPane.getColumnConstraints().add(columnConstraints1);
@@ -262,11 +316,6 @@ public class OffLinePlayeScreen extends AnchorPane {
         gridPane.getChildren().add(imageView6);
         gridPane.getChildren().add(imageView7);
         hBox.getChildren().add(gridPane);
-        getChildren().add(hBox);
-        hBox0.getChildren().add(backImageView);
-        getChildren().add(hBox0);
-        getChildren().add(label);
-
     }
 
     protected void setXO(javafx.scene.input.MouseEvent event) {
@@ -289,7 +338,7 @@ public class OffLinePlayeScreen extends AnchorPane {
                 cellFallCounter++;
 
                 if (checkWin(cell, 'x')) {
-                    controller.alertWinner();
+                    makeAlert("Tic Tac toe", "you win!");
                 } else {
                     computerTurn(cell);
                 }
@@ -297,15 +346,31 @@ public class OffLinePlayeScreen extends AnchorPane {
         }
 
         if (cellFallCounter == 9 && !(checkWin(cell, 'x') || checkWin(cell, 'o'))) {
-            controller.alertDrawen();
+            makeAlert("Tic Tac toe", "you draw!");
         }
     }
+
+    public boolean makeAlert(String title, String text) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alert.getDialogPane().setStyle("-fx-background-color: #2c3e50; -fx-fill: #292929;");
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/backgroundB.png")));
+        alert.setHeaderText(null);
+        alert.setContentText(text);
+        ImageView imageView = new ImageView(
+                new Image(getClass().getResourceAsStream("/images/background.png")));
+        imageView.setFitHeight(50.0);
+        imageView.setFitWidth(50.0);
+        alert.setGraphic(imageView);
+        Optional<ButtonType> action = alert.showAndWait();
+        return action.isPresent();
+    }
+
     public void computerTurn(char cell[][]) {
-        //int randomFirstCell = random.nextInt(4) + 1;
 
         switch (movesCounter) {
             case 1:
-                System.out.println("Move 1");
                 // if (randomFirstCell == 1) {
                 if (cell[1][1] == '\0') {
                     imageView3.setImage(new Image(getClass().getResource("/images/o.png").toExternalForm()));
@@ -313,7 +378,6 @@ public class OffLinePlayeScreen extends AnchorPane {
                     firstMove = "11";
                     cell[1][1] = 'o';
 
-                    //}
                 } else if (cell[1][1] == 'x') {
                     imageView1.setImage(new Image(getClass().getResource("/images/o.png").toExternalForm()));
                     x_Trun = true;
@@ -325,12 +389,11 @@ public class OffLinePlayeScreen extends AnchorPane {
 
                 //  isEnd = checkWin(cell, 'x');
                 if (checkWin(cell, 'o')) {
-                    controller.alertLosser();
+                    makeAlert("Tic Tac Toe", "you Lose!");
 
                 }
                 break;
             case 2:
-                System.out.println("move 2");
                 caseTwo();
                 break;
             default:
@@ -338,7 +401,6 @@ public class OffLinePlayeScreen extends AnchorPane {
 
                     int second[] = checkBesideSymbol('o');
                     if (second[0] != 5) {
-                        System.out.println("counter >= 3 ");
                         cell[second[0]][second[1]] = 'o';
                         x_Trun = true;
 
@@ -350,7 +412,6 @@ public class OffLinePlayeScreen extends AnchorPane {
                         } else {
                             secondMy = noOtherOption();
                             if (secondMy[0] != 5) {
-                                System.out.println("" + secondMy[0] + "  " + secondMy[1]);
 
                                 cell[secondMy[0]][secondMy[1]] = 'o';
                                 if (secondMy[0] == 2 && secondMy[1] == 0) {
@@ -389,7 +450,7 @@ public class OffLinePlayeScreen extends AnchorPane {
                 isEnd = checkWin(cell, 'o');
                 // isEnd = checkWin(cell, 'x');
                 if (checkWin(cell, 'o')) {
-                    controller.alertLosser();
+                    makeAlert("Tic Tac Toe", "You Lose!");
 
                 }
                 break;
@@ -405,47 +466,39 @@ public class OffLinePlayeScreen extends AnchorPane {
         //[0][0] [0][1] [0][2]
 
         if (((cell[0][0] == sign) && (cell[0][1] == sign) && (cell[0][2] == sign))) {
-            System.out.println(sign + "  WIN");
             return true;
             //check if sign fill the second row
             //[1][0] [1][1] [1][2]
         } else if (((cell[1][0] == sign) && (cell[1][1] == sign) && (cell[1][2] == sign))) {
-            System.out.println(sign + "  WIN");
             return true;
             //check if sign fill the third row
             //[2][0] [2][1] [2][2]
         } else if (((cell[2][0] == sign) && (cell[2][1] == sign) && (cell[2][2] == sign))) {
-            System.out.println(sign + "  WIN");
             return true;
 
             //check if sign fill the first column
             //[0][0] [1][0] [2][0]
         } else if (((cell[0][0] == sign) && (cell[1][0] == sign) && (cell[2][0] == sign))) {
-            System.out.println(sign + "  WIN");
             return true;
 
             //check if sign fill the second column
             //[0][1] [1][1] [2][1]
         } else if (((cell[0][1] == sign) && (cell[1][1] == sign) && (cell[2][1] == sign))) {
-            System.out.println(sign + "  WIN");
             return true;
 
             //check if sign fill the third column
             //[0][2] [1][2] [2][2]
         } else if (((cell[0][2] == sign) && (cell[1][2] == sign) && (cell[2][2] == sign))) {
-            System.out.println(sign + "  WIN");
             return true;
 
             //check if sign fill the first diagonal
             //[0][0] [0][1] [0][2]
         } else if (((cell[0][0] == sign) && (cell[1][1] == sign) && (cell[2][2] == sign))) {
-            System.out.println(sign + "  WIN");
             return true;
 
             //check if sign fill the second diagonal
             //[0][2] [1][1] [2][0]
         } else if (((cell[0][2] == sign) && (cell[1][1] == sign) && (cell[2][0] == sign))) {
-            System.out.println(sign + "  WIN");
             return true;
 
         }
@@ -461,8 +514,7 @@ public class OffLinePlayeScreen extends AnchorPane {
             x_Trun = true;
             cell[2][0] = 'o';
             imageView5.setImage(new Image(getClass().getResource("/images/o.png").toExternalForm()));
-        } else if (cell[0][0] == 'x' && cell[1][1] == 'x' && cell[2][2] == '\0') {
-            //ممكن نشيلها
+        } else if (cell[0][0] == 'x' && cell[1][1] == 'x' && cell[2][2] == '\0') {        
             x_Trun = true;
             cell[2][2] = 'o';
             imageView7.setImage(new Image(getClass().getResource("/images/o.png").toExternalForm()));
@@ -491,19 +543,14 @@ public class OffLinePlayeScreen extends AnchorPane {
             cell[0][0] = 'o';
             imageView.setImage(new Image(getClass().getResource("/images/o.png").toExternalForm()));
         } else if (cell[2][0] == 'x' && cell[1][1] == 'x' && cell[0][2] == '\0') {
-            //ممكن تشيلها
             x_Trun = true;
             cell[0][2] = 'o';
             imageView1.setImage(new Image(getClass().getResource("/images/o.png").toExternalForm()));
         } else if (cell[2][1] == 'x' && cell[1][1] == 'x' && cell[0][1] == '\0') {
-            //ممكن تشيلها
-
             x_Trun = true;
             cell[0][1] = 'o';
             imageView0.setImage(new Image(getClass().getResource("/images/o.png").toExternalForm()));
         } else if (cell[2][2] == 'x' && cell[1][1] == 'x' && cell[0][0] == '\0') {
-            //ممكن تشيلها
-
             x_Trun = true;
             cell[0][0] = 'o';
             imageView.setImage(new Image(getClass().getResource("/images/o.png").toExternalForm()));
@@ -512,8 +559,6 @@ public class OffLinePlayeScreen extends AnchorPane {
             cell[1][0] = 'o';
             imageView2.setImage(new Image(getClass().getResource("/images/o.png").toExternalForm()));
         } else if (cell[1][2] == 'x' && cell[1][1] == 'x' && cell[1][0] == '\0') {
-            //ممكن تشيلها
-
             x_Trun = true;
             cell[1][0] = 'o';
             imageView2.setImage(new Image(getClass().getResource("/images/o.png").toExternalForm()));
@@ -727,7 +772,6 @@ public class OffLinePlayeScreen extends AnchorPane {
             if (ret[0] != 5) {
                 break;
             }
-            System.out.println("noOtherOption");
         }
 
         return ret;

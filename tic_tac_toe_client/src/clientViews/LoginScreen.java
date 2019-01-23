@@ -89,8 +89,8 @@ public class LoginScreen extends AnchorPane {
             public void handle(KeyEvent event) {
                 if (event.getCode() == KeyCode.ENTER) {
                     passwordTextField.requestFocus();
-                }else if(event.getCode() == KeyCode.TAB){
-                     passwordTextField.setFocusTraversable(true);
+                } else if (event.getCode() == KeyCode.TAB) {
+                    passwordTextField.setFocusTraversable(true);
                 }
             }
         });
@@ -148,7 +148,7 @@ public class LoginScreen extends AnchorPane {
         signInBtn.setPrefWidth(200.0);
         signInBtn.setStyle("-fx-background-color: #eecf56;");
         signInBtn.setText("Sign in ");
-        signInBtn.setFont(new Font("System Bold",12.0));
+        signInBtn.setFont(new Font("System Bold", 12.0));
         signInBtn.setTextFill(javafx.scene.paint.Color.valueOf("#2c3e50"));
 
         signInLabel.setLayoutX(95.0);
@@ -168,7 +168,7 @@ public class LoginScreen extends AnchorPane {
         signUpBtn.setPrefWidth(200.0);
         signUpBtn.setStyle("-fx-background-color: #eecf56;");
         signUpBtn.setText("Sign up ");
-        signUpBtn.setFont(new Font("System Bold",12.0));
+        signUpBtn.setFont(new Font("System Bold", 12.0));
         signUpBtn.setTextFill(javafx.scene.paint.Color.valueOf("#2c3e50"));
         signUpBtn.setOpaqueInsets(new Insets(2.0));
 
@@ -183,15 +183,15 @@ public class LoginScreen extends AnchorPane {
         welcomeLabel.setLayoutY(118.0);
         welcomeLabel.setPrefHeight(60.0);
         welcomeLabel.setPrefWidth(373.0);
-        welcomeLabel.setText("Welcome to Tic-tac toe");
-        welcomeLabel.setFont(new Font("System Bold",32.0));
+        welcomeLabel.setText("Welcome to Tic Tac Toe");
+        welcomeLabel.setFont(new Font("System Bold", 32.0));
         welcomeLabel.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
 
         infoLabel.setLayoutX(85.0);
         infoLabel.setLayoutY(165.0);
         infoLabel.setPrefHeight(85.0);
         infoLabel.setPrefWidth(277.0);
-        infoLabel.setText("The Tic Tac Toe game! Simple, Quick and"+"\n"+" Funny!");
+        infoLabel.setText("The Tic Tac Toe game! Simple, Quick and" + "\n" + " Funny!");
         infoLabel.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
         infoLabel.setFont(new Font(15.0));
 
@@ -202,7 +202,7 @@ public class LoginScreen extends AnchorPane {
         playNowBtn.setPrefWidth(123.0);
         playNowBtn.setStyle("-fx-background-color: #EECF56;");
         playNowBtn.setText("Play Offline!");
-        playNowBtn.setFont(new Font("System Bold",15.0));
+        playNowBtn.setFont(new Font("System Bold", 15.0));
         playNowBtn.setTextFill(javafx.scene.paint.Color.valueOf("#2c3e50"));
 
         withFriendsLabel.setLayoutX(251.0);
@@ -282,5 +282,13 @@ public class LoginScreen extends AnchorPane {
         if (player != null) {
             controller.openMultiPlayerScreen();
         }
+    }
+
+    public void playAgain() {
+        controller.openOfflineScreen();
+    }
+
+    public void openLoginScreen() {
+        controller.openLoginScreen();
     }
 }

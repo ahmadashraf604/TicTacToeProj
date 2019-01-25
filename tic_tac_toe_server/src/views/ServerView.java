@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -13,7 +14,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.util.Callback;
-import common.Player;
+import commen.Player;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -28,8 +29,6 @@ public class ServerView extends AnchorPane {
     protected final ImageView imageView0;
     protected final Label label;
     protected final Label label0;
-    protected final Label stateLabel;
-    protected final Label serverStateLabel;
     protected final Button serverButton;
     protected final Label label1;
     protected final Label playerNumbers;
@@ -45,8 +44,6 @@ public class ServerView extends AnchorPane {
         imageView0 = new ImageView();
         label = new Label();
         label0 = new Label();
-        stateLabel = new Label();
-        serverStateLabel = new Label();
         serverButton = new Button();
         label1 = new Label();
         playerNumbers = new Label();
@@ -80,28 +77,16 @@ public class ServerView extends AnchorPane {
         imageView0.setImage(new Image(getClass().getResourceAsStream("/images/background.png")));
 
         label.setLayoutX(66.0);
-        label.setLayoutY(70.0);
+        label.setLayoutY(68.0);
         label.setText("Tic Tac Toe");
         label.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
         label.setFont(new Font(32.0));
 
         label0.setLayoutX(95.0);
-        label0.setLayoutY(120.0);
+        label0.setLayoutY(121.0);
         label0.setText("Server");
         label0.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
         label0.setFont(new Font("System Bold", 32.0));
-        
-        stateLabel.setLayoutX(80.0);
-        stateLabel.setLayoutY(170.0);
-        stateLabel.setText("State : ");
-        stateLabel.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
-        stateLabel.setFont(new Font("System Bold", 20.0));
-        
-        serverStateLabel.setLayoutX(150.0);
-        serverStateLabel.setLayoutY(170.0);
-        serverStateLabel.setText("active");
-        serverStateLabel.setTextFill(javafx.scene.paint.Color.valueOf("#00ff00"));
-        serverStateLabel.setFont(new Font("System Bold", 20.0));
 
         serverButton.setLayoutX(112.0);
         serverButton.setLayoutY(210.0);
@@ -116,13 +101,9 @@ public class ServerView extends AnchorPane {
                 if (conroller.serverIsOpen()) {
                     serverButton.setText("on");
                     conroller.closeServer();
-        serverStateLabel.setText("Inactive");
-        serverStateLabel.setTextFill(javafx.scene.paint.Color.valueOf("#ff0000"));
                 } else {
                     serverButton.setText("off");
                     conroller.openServer();
-        serverStateLabel.setText("Active");
-        serverStateLabel.setTextFill(javafx.scene.paint.Color.valueOf("#00ff00"));
                 }
             }
         });
@@ -157,8 +138,6 @@ public class ServerView extends AnchorPane {
         getChildren().add(imageView0);
         getChildren().add(label);
         getChildren().add(label0);
-        getChildren().add(serverStateLabel);
-        getChildren().add(stateLabel);
         getChildren().add(serverButton);
         getChildren().add(label1);
         getChildren().add(playerNumbers);

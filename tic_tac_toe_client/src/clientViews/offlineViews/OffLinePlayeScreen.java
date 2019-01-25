@@ -80,7 +80,7 @@ public class OffLinePlayeScreen extends AnchorPane {
         setMinWidth(USE_PREF_SIZE);
         setPrefHeight(500.0);
         setPrefWidth(900.0);
-        setStyle("-fx-background-color: "+controller.SCENE_BACKGROUND);
+        setStyle("-fx-background-color: #2c3e50;");
 
         AnchorPane.setBottomAnchor(hBox, 30.0);
         AnchorPane.setLeftAnchor(hBox, 30.0);
@@ -103,7 +103,7 @@ public class OffLinePlayeScreen extends AnchorPane {
         gridPane.setMinWidth(USE_PREF_SIZE);
         gridPane.setPrefHeight(420.0);
         gridPane.setPrefWidth(420.0);
-        gridPane.setStyle("-fx-background-color: "+controller.SCENE_FORGROUND);
+        gridPane.setStyle("-fx-background-color: #ecf0f1;");
 
         columnConstraints.setHgrow(javafx.scene.layout.Priority.SOMETIMES);
         columnConstraints.setMaxWidth(174.0);

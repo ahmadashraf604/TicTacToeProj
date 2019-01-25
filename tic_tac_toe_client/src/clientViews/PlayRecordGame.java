@@ -1,9 +1,8 @@
 package clientViews;
 
-import common.Game;
+import commen.Game;
 import java.util.List;
 import javafx.animation.AnimationTimer;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -32,12 +31,9 @@ public class PlayRecordGame extends AnchorPane {
     protected final ImageView imageView;
     protected final HBox hBox1;
     protected final ImageView imageView0;
-    protected final Label usernameLabel;
-    protected final Label vsLabel;
-    protected final Label vsUsernameLabel;
+    protected final Label label;
     protected final ImageView logoutImageView;
     protected final HBox hBox2;
-    protected final HBox gridViewBox;
     protected GridPane gridPane;
     protected ColumnConstraints columnConstraints;
     protected ColumnConstraints columnConstraints0;
@@ -54,9 +50,8 @@ public class PlayRecordGame extends AnchorPane {
     protected ImageView imageView8;
     protected ImageView imageView9;
     protected ImageView logoutImageView0;
-    ListView listView;
+    protected ListView listView;
     Tic_tac_toe_client controller;
-    boolean isRecordPlaying = false;
 
     public PlayRecordGame(Tic_tac_toe_client controller) {
 
@@ -67,12 +62,9 @@ public class PlayRecordGame extends AnchorPane {
         imageView = new ImageView();
         hBox1 = new HBox();
         imageView0 = new ImageView();
-        usernameLabel = new Label();
-        vsLabel = new Label();
-        vsUsernameLabel = new Label();
+        label = new Label();
         logoutImageView = new ImageView();
         hBox2 = new HBox();
-        gridViewBox = new HBox();
 
         setId("AnchorPane");
         setPrefHeight(500.0);
@@ -90,11 +82,11 @@ public class PlayRecordGame extends AnchorPane {
 
         hBox.setPrefHeight(35.0);
         hBox.setPrefWidth(860.0);
-        hBox.setSpacing(300.0);
+        hBox.setSpacing(630.0);
 
         hBox0.setPrefHeight(35.0);
-        hBox0.setPrefWidth(500.0);
-        hBox0.setSpacing(10.0);
+        hBox0.setPrefWidth(200.0);
+        hBox0.setSpacing(20.0);
 
         imageView.setFitHeight(30.0);
         imageView.setFitWidth(35.0);
@@ -111,18 +103,9 @@ public class PlayRecordGame extends AnchorPane {
         imageView0.setPreserveRatio(true);
         imageView0.setImage(new Image(getClass().getResourceAsStream("/images/user.png")));
 
-        usernameLabel.setText(controller.getPlayer().getUsername());
-        usernameLabel.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
-        usernameLabel.setFont(new Font(20.0));
-
-        vsLabel.setText("\tvs\t");
-        vsLabel.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
-        vsLabel.setFont(new Font(20.0));
-        vsLabel.setVisible(false);
-
-        vsUsernameLabel.setText("");
-        vsUsernameLabel.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
-        vsUsernameLabel.setFont(new Font(20.0));
+        label.setText(controller.getPlayer().getUsername());
+        label.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
+        label.setFont(new Font(20.0));
 
         logoutImageView.setFitHeight(30.0);
         logoutImageView.setFitWidth(35.0);
@@ -137,9 +120,6 @@ public class PlayRecordGame extends AnchorPane {
         hBox2.setPrefWidth(860.0);
         hBox2.setSpacing(60.0);
 
-        gridViewBox.setPrefHeight(420.0);
-        gridViewBox.setPrefWidth(420.0);
-
         createGridView();
         displayPlayerList();
         listView.setPrefHeight(200.0);
@@ -147,14 +127,11 @@ public class PlayRecordGame extends AnchorPane {
 
         hBox0.getChildren().add(imageView);
         hBox1.getChildren().add(imageView0);
-        hBox1.getChildren().add(usernameLabel);
-        hBox1.getChildren().add(vsLabel);
-        hBox1.getChildren().add(vsUsernameLabel);
+        hBox1.getChildren().add(label);
         hBox0.getChildren().add(hBox1);
         hBox.getChildren().add(hBox0);
         hBox.getChildren().add(logoutImageView);
         vBox.getChildren().add(hBox);
-        hBox2.getChildren().add(gridViewBox);
         hBox2.getChildren().add(listView);
         vBox.getChildren().add(hBox2);
         getChildren().add(vBox);
@@ -181,6 +158,7 @@ public class PlayRecordGame extends AnchorPane {
     }
 
     public void displayPlayerList() {
+
         List<String> activePlayer = controller.getRecordedPlayers();
         if (activePlayer.size() > 0) {
             ObservableList<String> list = FXCollections.observableArrayList(activePlayer);
@@ -192,7 +170,30 @@ public class PlayRecordGame extends AnchorPane {
                 }
             });
             listView.setOnMouseClicked((MouseEvent event) -> {
-                onItemClick((String) listView.getSelectionModel().getSelectedItem());
+                String selectedItem = (String) listView.getSelectionModel().getSelectedItem();
+                if (selectedItem != null) {
+                    Game game = controller.getGameRecord(selectedItem);
+                    createGridView();
+                    new AnimationTimer() {
+                        int i = 0;
+                        long lastUpdate = 0;
+
+                        @Override
+                        public void handle(long now) {
+                            if (now - lastUpdate >= 700_000_000) {
+                                drawCell(
+                                        game.getGameStates().get(i).getRowPosition(),
+                                        game.getGameStates().get(i).getColPosition(),
+                                        game.getGameStates().get(i).getSymbol());
+                                i++;
+                                if (i >= game.getGameStates().size()) {
+                                    stop();
+                                }
+                                lastUpdate = now;
+                            }
+                        }
+                    }.start();
+                }
             });
         } else {
             listView = new ListView();
@@ -216,7 +217,7 @@ public class PlayRecordGame extends AnchorPane {
 
     public void createGridView() {
         if (gridPane != null) {
-            gridViewBox.getChildren().remove(gridPane);
+            hBox2.getChildren().remove(gridPane);
         }
         gridPane = new GridPane();
         columnConstraints = new ColumnConstraints();
@@ -254,7 +255,7 @@ public class PlayRecordGame extends AnchorPane {
 
         gridPane.setPrefHeight(420.0);
         gridPane.setPrefWidth(420.0);
-        gridPane.setStyle("-fx-background-color: " + controller.SCENE_FORGROUND);
+        gridPane.setStyle("-fx-background-color: #eecf56;");
 
         columnConstraints.setHgrow(javafx.scene.layout.Priority.SOMETIMES);
 
@@ -367,57 +368,7 @@ public class PlayRecordGame extends AnchorPane {
         gridPane.getChildren().add(imageView8);
         gridPane.getChildren().add(imageView9);
         gridPane.getChildren().add(logoutImageView0);
-        gridViewBox.getChildren().add(gridPane);
-    }
+        hBox2.getChildren().add(gridPane);
 
-    private void onItemClick(String selectedItem) {
-        if (selectedItem != null) {
-            isRecordPlaying = true;
-            vsLabel.setVisible(true);
-            vsUsernameLabel.setText(selectedItem);
-            Game game = controller.getGameRecord(selectedItem);
-            createGridView();
-            listView.setDisable(true);
-            new AnimationTimer() {
-                int i = 0;
-                long lastUpdate = 0;
-
-                @Override
-                public void handle(long now) {
-                    if (now - lastUpdate >= 700_000_000) {
-                        logoutImageView.setDisable(true);
-                        imageView.setDisable(true);
-                        drawCell(
-                                game.getGameStates().get(i).getRowPosition(),
-                                game.getGameStates().get(i).getColPosition(),
-                                game.getGameStates().get(i).getSymbol());
-                        i++;
-                        if (i >= game.getGameStates().size()) {
-                            stop();
-                        }
-                        lastUpdate = now;
-                    }
-                }
-
-                @Override
-                public void stop() {
-                    super.stop();
-                    if (game.getResult().equals("Drow")) {
-                        Platform.runLater(()
-                                -> controller.makeAlert("The result",
-                                        "the winner is " + game.getResult()));
-                    } else {
-                        Platform.runLater(()
-                                -> controller.makeAlert("The result",
-                                        "The result is " + game.getResult()));
-                    }
-                    listView.setDisable(false);
-                    vsLabel.setVisible(false);
-                    vsUsernameLabel.setText("");
-                    logoutImageView.setDisable(false);
-                    imageView.setDisable(false);
-                }
-            }.start();
-        }
     }
 }

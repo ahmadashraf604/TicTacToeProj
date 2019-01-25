@@ -5,26 +5,22 @@
  */
 package model;
 
+
+
 /**
  *
  * @author Ashraf_R
  */
-public class GameState {
+public class GameState{
 
     private int gameCellCounter;
     private char gameBoard[][];
     private boolean isRecording;
-    private String recriver;
 
-    public GameState(String recriver) {
+    public GameState() {
         gameCellCounter = 0;
         gameBoard = new char[3][3];
         isRecording = false;
-        this.recriver = recriver;
-    }
-
-    public String getRecriver() {
-        return recriver;
     }
 
     public boolean getIsRecording() {
@@ -34,7 +30,7 @@ public class GameState {
     public void setIsRecording(boolean isRecording) {
         this.isRecording = isRecording;
     }
-
+    
     boolean isDraw() {
         return (gameCellCounter == 9 && !(isWin('x') || isWin('o')));
     }
@@ -42,7 +38,7 @@ public class GameState {
     public int getGameCellCounter() {
         return gameCellCounter;
     }
-
+ 
     private void increamantGameCellCounter() {
         this.gameCellCounter++;
     }

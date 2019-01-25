@@ -5,14 +5,15 @@
  */
 package model;
 
-import common.Chat;
-import common.ClientInt;
-import common.Player;
-import common.ServerInt;
-import common.Game;
-import common.Messages;
+import chatstate.JAXBUtilsChat;
+import commen.Chat;
+import commen.ClientInt;
+import commen.Player;
+import commen.ServerInt;
+import commen.Game;
+import commen.Messages;
 import gamestatexml.JAXBUtils;
-import common.SavedGameState;
+import commen.SavedGameState;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -41,11 +42,14 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
     Tic_tac_toe_server controller;
     SavedGameState savedGameState;
     Game game;
+    JAXBUtilsChat jAXBUtilsChat;
     JAXBUtils xmlUtils;
     Chat chat;
 
     public ServerImplemention(Tic_tac_toe_server controller) throws RemoteException {
         this.controller = controller;
+        jAXBUtilsChat = new JAXBUtilsChat();
+        chat = new Chat();
     }
 
     @Override
@@ -89,52 +93,46 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
     }
 
     @Override
-    public boolean sendInvition(String sender, String receiver) {
-        ClientInt receiverClient = clients.get(receiver);
-        if (receiverClient != null) {
-            try {
-                receiverClient.receiveInvition(sender, receiver);
-                return true;
-            } catch (RemoteException ex) {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public void acceptInvitation(String sender, String receiver) {
-        dataBaseConnection.setPlayerInGame(sender, receiver);
-        ClientInt sendClient = clients.get(sender);
-        gameStateMap.put(sender, new GameState(receiver));
+    public void sendInvition(String sender, String reciever) {
+        ClientInt recieverClient = clients.get(reciever);
         try {
-            sendClient.acceptInvitation(sender, receiver);
+            recieverClient.receiveInvition(sender, reciever);
         } catch (RemoteException ex) {
             Logger.getLogger(ServerImplemention.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public void refuseInvitation(String sender, String receiver) {
+    public void acceptInvitation(String sender, String reciever) {
         ClientInt sendClient = clients.get(sender);
+        gameStateMap.put(sender, new GameState());
         try {
-            sendClient.refuseInvitation(sender, receiver);
+            sendClient.acceptInvitation(sender, reciever);
         } catch (RemoteException ex) {
             Logger.getLogger(ServerImplemention.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public void sendGameCell(String sender, String receiver, int rowIndex, int columnIndex, char symbol) {
-        if (receiver != null && sender != null) {
+    public void refuseInvitation(String sender, String reciever) throws RemoteException {
+        ClientInt sendClient = clients.get(sender);
+        try {
+            sendClient.refuseInvitation(sender, reciever);
+        } catch (RemoteException ex) {
+            Logger.getLogger(ServerImplemention.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void sendGameCell(String sender, String reciever, int rowIndex, int columnIndex, char symbol) {
+        if (reciever != null && sender != null) {
             try {
                 ClientInt senderClient = clients.get(sender);
-                ClientInt receiverClient = clients.get(receiver);
+                ClientInt recieverClient = clients.get(reciever);
                 if (senderClient == null) {
-                    receiverClient.hundleExcptionsCases("lose Connection",
+                    recieverClient.hundleExcptionsCases("lose Connection",
                             "Unfortionately your friend logout for now ,please try play with other friend");
-                } else if (receiverClient == null) {
+                } else if (recieverClient == null) {
                     senderClient.hundleExcptionsCases("lose Connection",
                             "Unfortionately your friend logout for now ,please try play with other friend");
                 } else {
@@ -147,7 +145,7 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
                         if (symbol == 'x') {
                             savedGameState.setUserName(sender);
                         } else {
-                            savedGameState.setUserName(receiver);
+                            savedGameState.setUserName(reciever);
                         }
                         savedGameState.setRowPosition(rowIndex);
                         savedGameState.setColPosition(columnIndex);
@@ -162,46 +160,46 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
                             //recording the game
                             if (game != null) {
                                 game.setResult(sender);
-                                saveXmlInFile(sender, receiver);
+                                saveXmlInFile(sender, reciever);
                             }
                             senderClient.alertWinner();
                             dataBaseConnection.incrementPointsWin(sender);
-                            receiverClient.alertLosser();
+                            recieverClient.alertLosser();
                         } else if (gameBoard.isDraw()) {
                             //recording the game
                             if (game != null) {
                                 game.setResult("Draw");
-                                saveXmlInFile(sender, receiver);
+                                saveXmlInFile(sender, reciever);
                             }
                             senderClient.alertDrawen();
-                            receiverClient.alertDrawen();
+                            recieverClient.alertDrawen();
                             dataBaseConnection.incrementPointsDraw(sender);
-                            dataBaseConnection.incrementPointsDraw(receiver);
+                            dataBaseConnection.incrementPointsDraw(reciever);
                         }
                     } else if (symbol == 'o') {
                         if (gameBoard.isWin(symbol)) {
                             //recording the game
                             if (game != null) {
-                                game.setResult(receiver);
-                                saveXmlInFile(sender, receiver);
+                                game.setResult(reciever);
+                                saveXmlInFile(sender, reciever);
                             }
-                            receiverClient.alertWinner();
+                            recieverClient.alertWinner();
                             senderClient.alertLosser();
-                            dataBaseConnection.incrementPointsWin(receiver);
+                            dataBaseConnection.incrementPointsWin(reciever);
                         } else if (gameBoard.isDraw()) {
                             //recording the game
                             if (game != null) {
                                 game.setResult("Draw");
-                                saveXmlInFile(sender, receiver);
+                                saveXmlInFile(sender, reciever);
                             }
                             senderClient.alertDrawen();
-                            receiverClient.alertDrawen();
+                            recieverClient.alertDrawen();
                             dataBaseConnection.incrementPointsDraw(sender);
-                            dataBaseConnection.incrementPointsDraw(receiver);
+                            dataBaseConnection.incrementPointsDraw(reciever);
                         }
                     }
                     senderClient.recieveGameCell(rowIndex, columnIndex, symbol);
-                    receiverClient.recieveGameCell(rowIndex, columnIndex, symbol);
+                    recieverClient.recieveGameCell(rowIndex, columnIndex, symbol);
                 }
             } catch (RemoteException ex) {
                 Logger.getLogger(ServerImplemention.class.getName()).log(Level.SEVERE, null, ex);
@@ -209,10 +207,17 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
         }
     }
 
-    private void saveXmlInFile(String sender, String receiver) {
-        xmlUtils.generateXml(game, sender, receiver);
-        String fileName = "./" + sender + "&" + receiver + "Xml" + ".xml";
-        dataBaseConnection.setRecordName(sender, receiver, fileName);
+    private void saveXmlInFile(String sender, String reciever) {
+        xmlUtils.generateXml(game, sender, reciever);
+        String fileName = "./" + sender + "&" + reciever + "Xml" + ".xml";
+        dataBaseConnection.setRecordName(sender, reciever, fileName);
+    }
+
+    private void saveChatXmlInFile(String sender, String reciever) {       
+        String fileName = "./" + sender + "_" + reciever + "Xml" + ".xml";
+        
+        jAXBUtilsChat.generateXml(chat, sender, reciever);
+        dataBaseConnection.setChatMessages(sender, reciever, fileName);
     }
 
     @Override
@@ -274,28 +279,36 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
                 senderClient.hundleExcptionsCases("lose Connection",
                         "Unfortunately your friend logout for now ,the message will not be sent to " + receiver);
             } else {
-                chat = new Chat();
+
                 Messages chatMessages = new Messages();
                 receiverClient.receiveMessage(sender, receiver, msg);
                 senderClient.receiveMessage(sender, receiver, msg);
                 chatMessages.setSender(sender);
                 chatMessages.setReceiver(receiver);
-                chatMessages.setMessageContent(msg);
+                chatMessages.setMessageContent(sender + " : " + msg);
                 chat.add(chatMessages);
+
             }
         } catch (RemoteException ex) {
+
+        }
+        for (int i = 0; i < chat.getMessges().size(); i++) {
+            System.out.println("messages " + chat.getMessges().get(i).getMessageContent());
 
         }
     }
 
     @Override
-    public Player getPlayer(String username) throws RemoteException {
-        return dataBaseConnection.getPlayer(username);
+    public void saveMessages(String sender, String receiver) throws RemoteException {
+        saveChatXmlInFile(sender, receiver);
+
     }
 
     @Override
-    public boolean checkIfActive(String username) throws RemoteException {
-        return dataBaseConnection.isNotActive(username);
+    public Chat getRecordedChatMessages(String sender, String recevier) throws RemoteException {
+        String messageXmlFileName = dataBaseConnection.getMessagesFileNameFromDataBase(sender, recevier);
+        System.out.println("xml file name" + messageXmlFileName);
+        return jAXBUtilsChat.readXml(messageXmlFileName);
     }
 
 }

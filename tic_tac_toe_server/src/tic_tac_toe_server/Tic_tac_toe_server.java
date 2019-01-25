@@ -5,12 +5,13 @@
  */
 package tic_tac_toe_server;
 
+import chatstate.JAXBUtilsChat;
 import java.util.List;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.DataBaseConnection;
-import common.Player;
+import commen.Player;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -39,6 +40,7 @@ public class Tic_tac_toe_server extends Application {
 
     public Tic_tac_toe_server() {
         dataBaseConnection = new DataBaseConnection();
+
     }
 
     @Override

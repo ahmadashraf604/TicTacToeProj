@@ -1,6 +1,7 @@
 package clientViews;
 
-import common.Player;
+import commen.Chat;
+import commen.Player;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -31,6 +32,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import static sun.audio.AudioPlayer.player;
 import tic_tac_toe_client.Tic_tac_toe_client;
 
 public class MultiPlayerScreen extends AnchorPane {
@@ -235,9 +237,7 @@ public class MultiPlayerScreen extends AnchorPane {
         hBoxListView.setAlignment(javafx.geometry.Pos.CENTER);
         hBoxListView.setPrefHeight(420.0);
         hBoxListView.setPrefWidth(170.0);
-        hBoxListView.setStyle("-fx-background-color: " + controller.SCENE_FORGROUND
-                + "; -fx-border-radius: 5; -fx-background-radius: 5;");
-        hBoxListView.setPadding(new Insets(2.0));
+        hBoxListView.setStyle("-fx-background-color: #ecf0f1");
 
         chatViewVBox.setAlignment(javafx.geometry.Pos.CENTER);
         chatViewVBox.setPrefHeight(420.0);
@@ -274,8 +274,10 @@ public class MultiPlayerScreen extends AnchorPane {
         sendMsgImageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+
                 controller.sendMsg(controller.getPlayer().getUsername(),
                         receiverUsername.getText(), sendMsgTextField.getText());
+
             }
         });
 
@@ -504,6 +506,10 @@ public class MultiPlayerScreen extends AnchorPane {
 
     }
 
+    public TextArea getTextArea() {
+        return textArea;
+    }
+
     class PlayerCell extends ListCell<Player> {
 
         HBox hbox = new HBox();
@@ -544,22 +550,22 @@ public class MultiPlayerScreen extends AnchorPane {
                 chat.setOnMouseClicked((MouseEvent event) -> {
                     receiverUsername.setText(player.getUsername());
                     chatViewVBox.setVisible(true);
+                    textArea.setText("");
+                    Chat chatMessages = controller.getRecordedChatMessages(player.getUsername());
+                    System.out.println("player Name in show chat box" + player.getUsername());
+                    if (chatMessages != null) {
+                        for (int i = 0; i < chatMessages.getMessges().size(); i++) {
+                            textArea.appendText(chatMessages.getMessges().get(i).getMessageContent() + "\n");
+                        }
+                    }
+
                 });
                 game.setFitWidth(18.0);
                 game.setFitHeight(17.0);
-                if (!player.isInGame()) {
-                    game.setImage(new Image(getClass().getResourceAsStream("/images/game.png")));
-                    game.setOnMouseClicked((MouseEvent event) -> {
-                        controller.sendInvition(player.getUsername());
-                        
-                    });
-                }else{
-                    game.setImage(new Image(getClass().getResourceAsStream("/images/user.png")));
-                    game.setOnMouseClicked((MouseEvent event) -> {
-                        controller.makeAlert("Error", "you can not play with "+
-                                player.getUsername()+" now");
-                    });
-                }
+                game.setImage(new Image(getClass().getResourceAsStream("/images/game.png")));
+                game.setOnMouseClicked((MouseEvent event) -> {
+                    controller.sendInvition(player.getUsername());
+                });
 
                 setGraphic(hbox);
             }
@@ -583,10 +589,7 @@ public class MultiPlayerScreen extends AnchorPane {
                 });
                 playersListView.setPrefHeight(420.0);
                 playersListView.setPrefWidth(170.0);
-                playersListView.setStyle("-fx-border-radius: 7;"
-                        + "-fx-border-color: " + controller.SCENE_FORGROUND + ";"
-                        + " -fx-background-radius: 7; "
-                        + "-fx-faint-focus-color: transparent;");
+                playersListView.setStyle("-fx-background-radius: 7;");
                 hBoxListView.getChildren().add(playersListView);
             } else {
                 playersListView = new ListView();
@@ -600,18 +603,26 @@ public class MultiPlayerScreen extends AnchorPane {
                 textArea.setText("");
             }
             receiverUsername.setText(receiver);
+
         } else {
             if (!sender.equals(receiverUsername.getText())) {
                 textArea.setText("");
             }
             receiverUsername.setText(sender);
         }
-        chatViewVBox.setVisible(true);
-        sendMsgTextField.setText("");
-        textArea.appendText(message + "\n");
-    }
 
-    public void updateScore(int score) {
-        myScoreValueLabel.setText(score + "");
+        chatViewVBox.setVisible(true);
+        if (textArea.getText().equals("")) {
+            Chat chatMessages = controller.getRecordedChatMessages(sender);
+            if (chatMessages != null) {
+                for (int i = 0; i < chatMessages.getMessges().size(); i++) {
+                    textArea.appendText(chatMessages.getMessges().get(i).getMessageContent() + "\n");
+                }
+            }
+
+        }
+        sendMsgTextField.setText("");
+        textArea.appendText(sender + " : " + message + "\n");
+
     }
 }

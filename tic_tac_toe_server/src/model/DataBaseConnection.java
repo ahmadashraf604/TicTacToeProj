@@ -5,7 +5,7 @@
  */
 package model;
 
-import common.Player;
+import commen.Player;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,8 @@ public class DataBaseConnection {
 
         try {
             DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tic-tac-toe", "root", "1529");
+            Connection con = DriverManager.getConnection("jdbc:mysql://10.0.1.184:3306/tic-tac-toe", "anas", "1234");
+//            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tic-tac-toe", "root", "1529");
             statement = con.createStatement();
         } catch (SQLException ex) {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
@@ -58,39 +59,9 @@ public class DataBaseConnection {
         return null;
     }
 
-        public boolean isNotActive(String username) {
-        try {
-            ResultSet resultSet = statement.executeQuery(
-                    "SELECT * FROM players where (username='" + username + "' AND  active = '0' )");
-            if (resultSet.first()) {
-                if (resultSet.getInt("active") == 0) {
-
-                    System.out.println("offline user");
-                    return true;
-                } else {
-
-                    System.out.println("online user");
-                    return false;
-                }
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-         return false;
-    }
-
     private boolean setActive(String username) {
         try {
             return !(statement.execute("UPDATE players SET active = 1 WHERE (username = '" + username + "')"));
-        } catch (SQLException ex) {
-            Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
-    }
-
-    public boolean setPlayerInGame(String sender, String receiver) {
-        try {
-            return !(statement.execute("UPDATE players SET active = 2 WHERE (username = '" + sender + "') or (username = '" + receiver + "')"));
         } catch (SQLException ex) {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -117,18 +88,10 @@ public class DataBaseConnection {
                 player.setPassword(resultSet.getString("password"));
                 player.setEmail(resultSet.getString("email"));
                 player.setPoints(resultSet.getInt("points"));
-                switch (resultSet.getInt("active")) {
-                    case 0:
-                        player.setIsActive(false);
-                        player.setInGame(false);
-                        break;
-                    case 1:
-                        player.setIsActive(true);
-                        player.setInGame(false);
-                        break;
-                    case 2:
-                        player.setInGame(true);
-                        break;
+                if (resultSet.getInt("active") == 0) {
+                    player.setIsActive(false);
+                } else {
+                    player.setIsActive(true);
                 }
                 return player;
             }
@@ -150,11 +113,7 @@ public class DataBaseConnection {
                 player.setEmail(resultSet.getString("email"));
                 player.setPoints(resultSet.getInt("points"));
                 player.setIsActive(true);
-                if (resultSet.getInt("active") == 2) {
-                    player.setInGame(true);
-                } else {
-                    player.setInGame(false);
-                }
+
                 players.add(player);
             }
         } catch (SQLException ex) {
@@ -178,11 +137,6 @@ public class DataBaseConnection {
                     player.setIsActive(false);
                 } else {
                     player.setIsActive(true);
-                }
-                if (resultSet.getInt("active") == 2) {
-                    player.setInGame(true);
-                } else {
-                    player.setInGame(false);
                 }
                 players.add(player);
             }
@@ -265,5 +219,30 @@ public class DataBaseConnection {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return secondUserName;
+    }
+    public String getMessagesFileNameFromDataBase(String sender, String reciever) {
+        String fileName = null;
+        try {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM chat where (sender = '"
+                    + sender + "' AND  reciever = '" + reciever + "')or (sender = '" + reciever + "'AND  reciever ='" + sender + "')");
+            if (resultSet.next()) {
+                fileName = resultSet.getString("fileName");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return fileName;
+    }
+
+    public void setChatMessages(String sender, String receiver, String fileName) {
+        try {
+            if (getMessagesFileNameFromDataBase(sender, receiver) == null) {
+                statement.execute("INSERT INTO chat (sender, reciever , fileName) VALUES ('"
+                        + sender + "', '" + receiver + "', '" + fileName + "')");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 }

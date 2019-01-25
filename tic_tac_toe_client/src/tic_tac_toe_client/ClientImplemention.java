@@ -5,7 +5,7 @@
  */
 package tic_tac_toe_client;
 
-import common.ClientInt;
+import commen.ClientInt;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import javafx.application.Platform;
@@ -23,8 +23,8 @@ public class ClientImplemention extends UnicastRemoteObject implements ClientInt
     }
 
     @Override
-    public boolean receiveInvition(String sender, String reciever) {
-        return controller.receiveInvition(sender, reciever);
+    public void receiveInvition(String sender, String reciever) {
+        controller.receiveInvition(sender, reciever);
     }
 
     @Override
@@ -64,15 +64,8 @@ public class ClientImplemention extends UnicastRemoteObject implements ClientInt
 
     @Override
     public void receiveMessage(String sender, String receiver, String message) {
-        controller.receiveMsg(sender, receiver, message);
-//        multiPlayerScreen.getTextArea().appendText(message);
-//        multiPlayerScreen.getTextArea().appendText("\n");
+        controller.receiveMsg(sender,receiver,message);
 
-//        try {
-//            serverInt.getRecordedChatMessages(sender, receiver);
-//        } catch (RemoteException ex) {
-//            Logger.getLogger(Tic_tac_toe_client.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 
     @Override
@@ -82,6 +75,6 @@ public class ClientImplemention extends UnicastRemoteObject implements ClientInt
 
     @Override
     public void hundleExcptionsCases(String title, String description) {
-        Platform.runLater(() -> controller.makeAlert(title, description));
+        Platform.runLater(()-> controller.makeAlert(title, description));
     }
 }

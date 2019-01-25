@@ -16,6 +16,8 @@ public interface ClientInt extends Remote {
 
     public void renewActivePlayers() throws RemoteException;
 
+    public void popNotification(String title, String body) throws RemoteException;
+
     public boolean receiveInvition(String sender, String reciever) throws RemoteException;
 
     public void acceptInvitation(String sender, String reciever) throws RemoteException;
@@ -24,7 +26,7 @@ public interface ClientInt extends Remote {
 
     public void recieveGameCell(int rowIndex, int columnIndex, char sumbol) throws RemoteException;
 
-    public void alertWinner() throws RemoteException;
+    public void alertWinner(String body) throws RemoteException;
 
     public void alertLosser() throws RemoteException;
 

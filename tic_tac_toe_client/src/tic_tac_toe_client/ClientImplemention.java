@@ -43,8 +43,8 @@ public class ClientImplemention extends UnicastRemoteObject implements ClientInt
     }
 
     @Override
-    public void alertWinner() {
-        controller.alertWinner();
+    public void alertWinner(String body) {
+        controller.alertWinner(body);
     }
 
     @Override
@@ -65,14 +65,6 @@ public class ClientImplemention extends UnicastRemoteObject implements ClientInt
     @Override
     public void receiveMessage(String sender, String receiver, String message) {
         controller.receiveMsg(sender, receiver, message);
-//        multiPlayerScreen.getTextArea().appendText(message);
-//        multiPlayerScreen.getTextArea().appendText("\n");
-
-//        try {
-//            serverInt.getRecordedChatMessages(sender, receiver);
-//        } catch (RemoteException ex) {
-//            Logger.getLogger(Tic_tac_toe_client.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 
     @Override
@@ -88,5 +80,10 @@ public class ClientImplemention extends UnicastRemoteObject implements ClientInt
     @Override
     public void setIsRecording() throws RemoteException {
         controller.setIsRecording();
+    }
+
+    @Override
+    public void popNotification(String title, String body) throws RemoteException {
+       controller.popNotification(title, body);
     }
 }

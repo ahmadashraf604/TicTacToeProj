@@ -21,21 +21,22 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 
 /**
  *
@@ -311,63 +312,29 @@ public class Tic_tac_toe_client extends Application {
         Platform.runLater(() -> multiPlayerScreen.drawCell(rowIndex, columnIndex, sumbol));
     }
 
-    public void alertWinner() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                makeAlert("Winner", "You Are Winner");
-                player = renewPlayerInfo();
-                multiPlayerScreen.endGame(player.getPoints());
-            }
+    public void alertWinner(String body) {
+        Platform.runLater(() -> {
+            makeAlert("Winner", "You Are Winner " + body);
+            player = renewPlayerInfo();
+            multiPlayerScreen.endGame(player.getPoints());
         });
     }
 
     public void alertLosser() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                makeAlert("Losing", "You Are Lose the Game for Sorry");
-                multiPlayerScreen.endGame(player.getPoints());
-            }
+        Platform.runLater(() -> {
+            makeAlert("Losing", "You Are Lose the Game for Sorry");
+            multiPlayerScreen.endGame(player.getPoints());
         });
     }
 
     public void alertDrawen() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                makeAlert("Drawen", "You Are Draw");
-                player = renewPlayerInfo();
-                multiPlayerScreen.endGame(player.getPoints());
-            }
+        Platform.runLater(() -> {
+            makeAlert("Drawen", "You Are Draw");
+            player = renewPlayerInfo();
+            multiPlayerScreen.endGame(player.getPoints());
         });
     }
 
-    public boolean makeAlert(String title, String text) {
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle(title);
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        alert.getDialogPane().setStyle("-fx-background-color: #2c3e50; -fx-fill: #292929;");
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/backgroundB.png")));
-        alert.setHeaderText(null);
-        alert.setContentText(text);
-        ImageView imageView = new ImageView(
-                new Image(getClass().getResourceAsStream("/images/background.png")));
-        imageView.setFitHeight(50.0);
-        imageView.setFitWidth(50.0);
-        alert.setGraphic(imageView);
-        Optional<ButtonType> action = alert.showAndWait();
-        return action.isPresent();
-    }
-
-//    public void makeInfoAlert(String title, String text) {
-//        Alert alert = new Alert(AlertType.INFORMATION);
-//        alert.setTitle(title);
-//        alert.set
-//        alert.setHeaderText(null);
-//        alert.setContentText(text);
-//        Optional<ButtonType> action = alert.showAndWait();
-//       }
     void renewActivePlayers() {
         if (multiPlayerScreen != null) {
             multiPlayerScreen.displayPlayerList();
@@ -406,10 +373,12 @@ public class Tic_tac_toe_client extends Application {
 
     public void logout() {
         try {
-            serverInt.unRegister(player.getUsername());
-            openLoginScreen();
+            if (makeInfoAlert("Error", "Do you want to logout?")) {
+                openLoginScreen();
+                serverInt.unRegister(player.getUsername());
+            }
         } catch (RemoteException ex) {
-            Logger.getLogger(Tic_tac_toe_client.class.getName()).log(Level.SEVERE, null, ex);
+            serverInt = null;
         }
 
     }
@@ -425,20 +394,26 @@ public class Tic_tac_toe_client extends Application {
 
     // open about us screen by about us icon
     public void openAboutUsScreen() {
-        if (!isInGame()) {
+        if (player.isInGame()) {
             aboutUsScreen = new AboutUsScreen(this);
             Scene scene = new Scene(aboutUsScreen, 900, 500);
             primaryStage.setScene(scene);
             primaryStage.show();
+        } else {
+            makeAlert("Error", "we are sorry, you should continue the game first");
         }
     }
 
     // open play record screen by about us icon
     public void openPlayRecordScreen() {
-        playRecordGame = new PlayRecordGame(this);
-        Scene scene = new Scene(playRecordGame, 900, 500);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        if (player.isInGame()) {
+            playRecordGame = new PlayRecordGame(this);
+            Scene scene = new Scene(playRecordGame, 900, 500);
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } else {
+            makeAlert("Error", "we are sorry, you should continue the game first");
+        }
 
     }
 
@@ -498,27 +473,33 @@ public class Tic_tac_toe_client extends Application {
         multiPlayerScreen.receiveMsg(sender, receiver, message);
     }
 
-    public boolean isInGame() {
-        return inGame;
-    }
-
-    public void setInGame(boolean inGame) {
-        this.inGame = inGame;
-    }
-
-    private boolean makeInfoAlert(String title, String text) {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
+    private boolean setAlertSetting(Alert alert, String title, String body) {
         alert.setTitle(title);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/backgroundB.png")));
         alert.setHeaderText(null);
-        alert.setContentText(text);
+        alert.setContentText(body);
+        ImageView imageView = new ImageView(
+                new Image(getClass().getResourceAsStream("/images/background.png")));
+        imageView.setFitHeight(50.0);
+        imageView.setFitWidth(50.0);
+        alert.setGraphic(imageView);
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(
+                getClass().getResource("myDialogs.css").toExternalForm());
+        dialogPane.getStyleClass().add("myDialog");
         Optional<ButtonType> action = alert.showAndWait();
-        if (action.get() == ButtonType.OK) {//ok button is pressed
-            return true;
-        } else {
-            // cancel button is pressed
-            setInGame(false);
-            return false;
-        }
+        return action.get() == ButtonType.OK;
+    }
+
+    public boolean makeAlert(String title, String body) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        return setAlertSetting(alert, title, body);
+    }
+
+    private boolean makeInfoAlert(String title, String body) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        return setAlertSetting(alert, title, body);
     }
 
     void refuseInvitation(String sender, String reciever) {
@@ -532,4 +513,18 @@ public class Tic_tac_toe_client extends Application {
         multiPlayerScreen.setRecording();
     }
 
+    public void popNotification(String title, String body) {
+        Platform.runLater(() -> {
+            ImageView logoImageView = new ImageView(new Image("/images/backgroundB.png"));
+            logoImageView.setFitHeight(50.0);
+            logoImageView.setFitWidth(50.0);
+            Notifications.create()
+                    .title(title)
+                    .text(body)
+                    .graphic(logoImageView)
+                    .hideAfter(Duration.seconds(5.0))
+                    .position(Pos.BOTTOM_RIGHT)
+                    .show();
+        });
+    }
 }

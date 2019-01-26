@@ -98,9 +98,9 @@ public class DataBaseConnection {
         return false;
     }
 
-    public boolean setPlayerOutGame(String sender, String receiver) {
+    public boolean setPlayerOutGame(String username) {
         try {
-            return !(statement.execute("UPDATE players SET active = 1 WHERE (username = '" + sender + "') or (username = '" + receiver + "')"));
+            return !(statement.execute("UPDATE players SET active = 1 WHERE (username = '" + username + "')"));
         } catch (SQLException ex) {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         }

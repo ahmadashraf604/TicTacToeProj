@@ -83,7 +83,14 @@ public class Tic_tac_toe_client extends Application {
             try {
                 if (player != null) {
                     if (serverInt != null) {
-                        serverInt.unRegister(player.getUsername());
+                        if (!player.isInGame()) {
+                            serverInt.unRegister(player.getUsername());
+                        } else {
+                            if (makeInfoAlert("Error", "are you sure to close ,you will lose the game")) {
+                                openLoginScreen();
+                                serverInt.unRegister(player.getUsername());
+                            }
+                        }
                     }
                     System.err.println("logout");
                     System.exit(0);
@@ -227,6 +234,7 @@ public class Tic_tac_toe_client extends Application {
                         if (serverInt.isPlayerOnline(sender)) {
                             serverInt.acceptInvitation(sender, reciever);
                             multiPlayerScreen.startGame(sender);
+                            player = renewPlayerInfo();
                         } else {
                             client.hundleExcptionsCases("Error", "Sorry " + sender + " is offline now!");
                         }
@@ -273,11 +281,11 @@ public class Tic_tac_toe_client extends Application {
 
     public void startGame(String playerName) {
         this.isMyTurn = true;
+        player = renewPlayerInfo();
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 multiPlayerScreen.startGame(playerName);
-
             }
         });
     }

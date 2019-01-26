@@ -17,7 +17,9 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -50,9 +52,9 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
 
     @Override
     public void register(String username, ClientInt clientRef) {
-        clients.forEach((playerName,playerInt)->{
+        clients.forEach((playerName, playerInt) -> {
             try {
-                playerInt.popNotification("Tic Tac Toe", "your friend "+username+" is online now!");
+                playerInt.popNotification("Tic Tac Toe", "your friend " + username + " is online now!");
             } catch (RemoteException ex) {
                 Logger.getLogger(ServerImplemention.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -74,30 +76,26 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
 
     @Override
     public void unRegister(String username) {
-        gameStateMap.forEach((sender, board) -> {
-            if (username.equals(sender)) {
+        ArrayList<GameState> arrayList = new ArrayList<GameState>(gameStateMap.values());
+        for (GameState board : arrayList) {
+            if (username.equals(board.getSender())) {
                 try {
-                    clients.get(board.getRecriver()).alertWinner("because your frined "+sender+" is logout");
-                    dataBaseConnection.setPlayerOutGame(sender, board.getRecriver());
-                    gameStateMap.remove(sender);
+                    clients.get(board.getRecriver()).alertWinner("because your frined " + board.getSender() + " is logout");
+                    dataBaseConnection.setPlayerOutGame(board.getRecriver());
+                    gameStateMap.remove(board.getSender());
                 } catch (RemoteException ex) {
                     System.out.println("the user is not found");
                 }
             } else if (username.equals(board.getRecriver())) {
                 try {
-                    clients.get(sender).alertWinner("because your frined "+sender+" is logout");
-                    dataBaseConnection.setPlayerOutGame(sender, board.getRecriver());
-                    gameStateMap.remove(sender);
+                    clients.get(board.getSender()).alertWinner("because your frined " + board.getRecriver() + " is logout");
+                    dataBaseConnection.setPlayerOutGame(board.getSender());
+                    gameStateMap.remove(board.getSender());
                 } catch (RemoteException ex) {
                     System.out.println("the user is not found");
                 }
             }
-//            try {
-//                clients.get(username).logout();
-//            } catch (RemoteException ex) {
-//                System.out.println("the user is not found");
-//            }
-        });
+        }
         clients.remove(username);
         dataBaseConnection.logout(username);
         controller.displayPlayerList();
@@ -141,12 +139,12 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
 
     @Override
     public void acceptInvitation(String sender, String receiver) {
-        ClientInt sendClient = clients.get(sender);
-        if (sendClient != null) {
+        ClientInt senderClient = clients.get(sender);
+        if (senderClient != null) {
             dataBaseConnection.setPlayerInGame(sender, receiver);
-            gameStateMap.put(sender, new GameState(receiver));
+            gameStateMap.put(sender, new GameState(sender, receiver));
             try {
-                sendClient.acceptInvitation(sender, receiver);
+                senderClient.acceptInvitation(sender, receiver);
             } catch (RemoteException ex) {
                 Logger.getLogger(ServerImplemention.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -196,7 +194,8 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
                     if (symbol == 'x') {
                         if (gameBoard.isWin(symbol)) {
                             //make player is active not in game
-                            dataBaseConnection.setPlayerOutGame(sender, receiver);
+                            dataBaseConnection.setPlayerOutGame(sender);
+                            dataBaseConnection.setPlayerOutGame(receiver);
                             //delete the game board from hash map
                             gameStateMap.remove(sender);
                             //recording the game
@@ -209,7 +208,8 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
                             receiverClient.alertLosser();
                         } else if (gameBoard.isDraw()) {
                             //make player is active not in game
-                            dataBaseConnection.setPlayerOutGame(sender, receiver);
+                            dataBaseConnection.setPlayerOutGame(sender);
+                            dataBaseConnection.setPlayerOutGame(receiver);
                             //delete the game board from hash map
                             gameStateMap.remove(sender);
                             //recording the game
@@ -225,7 +225,8 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
                     } else if (symbol == 'o') {
                         if (gameBoard.isWin(symbol)) {
                             //make player is active not in game
-                            dataBaseConnection.setPlayerOutGame(sender, receiver);
+                            dataBaseConnection.incrementPointsDraw(sender);
+                            dataBaseConnection.incrementPointsDraw(receiver);
                             //delete the game board from hash map
                             gameStateMap.remove(sender);
                             //recording the game
@@ -238,7 +239,8 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
                             dataBaseConnection.incrementPointsWin(receiver);
                         } else if (gameBoard.isDraw()) {
                             //make player is active not in game
-                            dataBaseConnection.setPlayerOutGame(sender, receiver);
+                            dataBaseConnection.incrementPointsDraw(sender);
+                            dataBaseConnection.incrementPointsDraw(receiver);
                             //delete the game board from hash map
                             gameStateMap.remove(sender);
                             //recording the game
@@ -359,7 +361,7 @@ public class ServerImplemention extends UnicastRemoteObject implements ServerInt
 
     @Override
     public boolean isPlayerOnline(String username) {
-       return clients.get(username) != null;
+        return clients.get(username) != null;
     }
 
 }

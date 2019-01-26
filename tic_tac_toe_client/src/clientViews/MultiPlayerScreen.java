@@ -5,19 +5,25 @@ import java.util.List;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import static javafx.scene.layout.GridPane.getColumnIndex;
 import static javafx.scene.layout.GridPane.getRowIndex;
@@ -27,6 +33,7 @@ import javafx.scene.layout.Priority;
 import static javafx.scene.layout.Region.USE_PREF_SIZE;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -75,7 +82,8 @@ public class MultiPlayerScreen extends AnchorPane {
     protected final VBox vBox1;
     protected final HBox hBox3;
     protected final Text receiverUsername;
-    protected final TextArea textArea;
+    protected final VBox chatContemtHBox;
+    protected final ScrollPane chatScrollPane;
     protected final HBox chatHBox;
     protected final TextField sendMsgTextField;
     protected final ImageView sendMsgImageView;
@@ -119,7 +127,8 @@ public class MultiPlayerScreen extends AnchorPane {
         vBox1 = new VBox();
         hBox3 = new HBox();
         receiverUsername = new Text();
-        textArea = new TextArea();
+        chatContemtHBox = new VBox();
+        chatScrollPane = new ScrollPane();
         chatHBox = new HBox();
         sendMsgTextField = new TextField();
         sendMsgImageView = new ImageView();
@@ -262,17 +271,34 @@ public class MultiPlayerScreen extends AnchorPane {
         receiverUsername.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
         receiverUsername.setText("User name");
 
-        textArea.setEditable(false);
-        textArea.setFocusTraversable(false);
-        textArea.setPrefHeight(333.0);
-        textArea.setStyle("-fx-border-color: #fff; -fx-background-radius: 5; -fx-border-radius: 5;");
+        chatScrollPane.setPrefHeight(320.0);
+        chatScrollPane.setMaxHeight(320.0);
+        chatScrollPane.setVmax(0.9);
+        chatScrollPane.setStyle("-fx-background-color: #ecf0f1;"
+                + " -fx-border-color: #ffffff; "
+                + "-fx-background-radius: 5;"
+                + " -fx-border-radius: 5;");
+
+        chatContemtHBox.setPrefHeight(315.0);
+        chatContemtHBox.setPrefWidth(205.0);
+        chatContemtHBox.setAlignment(Pos.BOTTOM_CENTER);
+        chatContemtHBox.setStyle("-fx-background-color: #ecf0f1;"
+                + " -fx-border-color: #ffffff; "
+                + "-fx-background-radius: 5;"
+                + " -fx-border-radius: 5;");
 
         chatHBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         chatHBox.setSpacing(10.0);
-        chatHBox.setStyle("-fx-background-color: #fff; -fx-background-radius: 7;");
+        chatHBox.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 7;");
 
         sendMsgTextField.setPrefHeight(30.0);
         sendMsgTextField.setPrefWidth(180.0);
+        sendMsgTextField.setOnAction((event) -> {
+            if (!sendMsgTextField.getText().equals("")) {
+                controller.sendMsg(controller.getPlayer().getUsername(),
+                        receiverUsername.getText(), sendMsgTextField.getText());
+            }
+        });
 
         sendMsgImageView.setFitHeight(25.0);
         sendMsgImageView.setFitWidth(25.0);
@@ -282,8 +308,10 @@ public class MultiPlayerScreen extends AnchorPane {
         sendMsgImageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                controller.sendMsg(controller.getPlayer().getUsername(),
-                        receiverUsername.getText(), sendMsgTextField.getText());
+                if (!sendMsgTextField.getText().equals("")) {
+                    controller.sendMsg(controller.getPlayer().getUsername(),
+                            receiverUsername.getText(), sendMsgTextField.getText());
+                }
             }
         });
 
@@ -307,7 +335,8 @@ public class MultiPlayerScreen extends AnchorPane {
         vBox.getChildren().add(hBox);
         hBox3.getChildren().add(receiverUsername);
         vBox1.getChildren().add(hBox3);
-        vBox1.getChildren().add(textArea);
+        chatScrollPane.setContent(chatContemtHBox);
+        vBox1.getChildren().add(chatScrollPane);
         chatViewVBox.getChildren().add(vBox1);
         chatHBox.getChildren().add(sendMsgTextField);
         chatHBox.getChildren().add(sendMsgImageView);
@@ -607,18 +636,79 @@ public class MultiPlayerScreen extends AnchorPane {
     public void receiveMsg(String sender, String receiver, String message) {
         if (controller.getPlayer().getUsername().equals(sender)) {
             if (!receiver.equals(receiverUsername.getText())) {
-                textArea.setText("");
+                chatContemtHBox.getChildren().removeAll();
             }
             receiverUsername.setText(receiver);
         } else {
             if (!sender.equals(receiverUsername.getText())) {
-                textArea.setText("");
+                chatContemtHBox.getChildren().removeAll();
             }
             receiverUsername.setText(sender);
         }
         chatViewVBox.setVisible(true);
         sendMsgTextField.setText("");
-        textArea.appendText(message + "\n");
+        addToChat(sender, receiver, message);
+    }
+
+    public synchronized void addToChat(String sender, String receiver, String message) {
+        Task<HBox> othersMessages = new Task<HBox>() {
+            @Override
+            public HBox call() throws Exception {
+                Label bl6 = new Label();
+                bl6.setText(message);
+                bl6.setStyle("-fx-background-color: #ecf0f1;"
+                        + " -fx-border-color: #2c3e50; "
+                        + "-fx-background-radius: 5;"
+                        + " -fx-border-radius: 5;"
+                        + "-fx-text-fill: #2c3e50");
+                bl6.setPadding(new Insets(3.0));
+                HBox cHBox = new HBox();
+                cHBox.setMaxWidth(chatContemtHBox.getWidth() - 4);
+                cHBox.setMargin(bl6, new Insets(5, 5, 0, 5));
+                cHBox.fillHeightProperty();
+                cHBox.setAlignment(Pos.BOTTOM_LEFT);
+                cHBox.getChildren().add(bl6);
+                return cHBox;
+            }
+        };
+
+        othersMessages.setOnSucceeded(event -> {
+            chatContemtHBox.getChildren().add(othersMessages.getValue());
+        });
+
+        Task<HBox> yourMessages = new Task<HBox>() {
+            @Override
+            public HBox call() throws Exception {
+                Label bl6 = new Label();
+                bl6.setText(message);
+                bl6.setStyle("-fx-background-color: #2c3e50;"
+                        + " -fx-border-color: #2c3e50; "
+                        + "-fx-background-radius: 5;"
+                        + " -fx-border-radius: 5;"
+                        + "-fx-text-fill: #ecf0f1");
+                bl6.setFont(new Font(14.0));
+                bl6.setPadding(new Insets(3.0));
+                HBox cHBox = new HBox();
+                cHBox.setMaxWidth(chatContemtHBox.getWidth() - 4);
+                cHBox.setAlignment(Pos.BOTTOM_RIGHT);
+                cHBox.setMargin(bl6, new Insets(5, 5, 0, 5));
+                cHBox.fillHeightProperty();
+                cHBox.getChildren().add(bl6);
+                return cHBox;
+            }
+        };
+        yourMessages.setOnSucceeded(event -> chatContemtHBox.getChildren().add(yourMessages.getValue()));
+
+        if (controller.getPlayer().getUsername().equals(sender)) {
+            Thread t2 = new Thread(yourMessages);
+            t2.setDaemon(true);
+            t2.start();
+        } else {
+            Thread t = new Thread(othersMessages);
+            t.setDaemon(true);
+            t.start();
+        }
+        chatScrollPane.setVvalue(1.0);
     }
 
     public void endGame(int score) {
@@ -641,8 +731,8 @@ public class MultiPlayerScreen extends AnchorPane {
     public void setOtherPlayerName(String playerName) {
         otherPlayerName.setText(" VS " + playerName);
     }
-    
-    public void setIsInvitationBtnClicked(){
+
+    public void setIsInvitationBtnClicked() {
         isInvitationBtnClicked = false;
     }
 }

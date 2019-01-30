@@ -377,6 +377,7 @@ public class MultiPlayerScreen extends AnchorPane {
         if (gridPane != null) {
             //here we should delete gride pane 
             hBoxGridPane.getChildren().remove(gridPane);
+            gridPane = null;
         } else {
             hBoxGridPane.getChildren().remove(backgroundImageView);
         }
@@ -721,6 +722,7 @@ public class MultiPlayerScreen extends AnchorPane {
             isInvitationBtnClicked = false;
             hBoxGridPane.getChildren().remove(gridPane);
             hBoxGridPane.getChildren().add(backgroundImageView);
+            gridPane = null;
         }
     }
 

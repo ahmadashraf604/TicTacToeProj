@@ -14,13 +14,19 @@ public class GameState {
     private int gameCellCounter;
     private char gameBoard[][];
     private boolean isRecording;
-    private String recriver;
+    private final String recriver;
+    private final String sender;
 
-    public GameState(String recriver) {
+    public GameState(String sender, String recriver) {
         gameCellCounter = 0;
         gameBoard = new char[3][3];
         isRecording = false;
         this.recriver = recriver;
+        this.sender = sender;
+    }
+
+    public String getSender() {
+        return sender;
     }
 
     public String getRecriver() {

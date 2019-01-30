@@ -331,6 +331,7 @@ public class Tic_tac_toe_client extends Application {
     public void alertLosser() {
         Platform.runLater(() -> {
             makeAlert("Losing", "Hard luck!, Try to play again.");
+            player = renewPlayerInfo();
             multiPlayerScreen.endGame(player.getPoints());
         });
     }

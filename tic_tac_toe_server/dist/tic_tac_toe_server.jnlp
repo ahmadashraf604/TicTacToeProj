@@ -8,16 +8,8 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="lib\common.jar" size="11053" download="eager" />
-<<<<<<< HEAD
-    <jar href="tic_tac_toe_server.jar" size="66052" download="eager" />
-=======
-<<<<<<< HEAD
-    <jar href="tic_tac_toe_server.jar" size="59585" download="eager" />
-=======
-    <jar href="tic_tac_toe_server.jar" size="59794" download="eager" />
->>>>>>> deeafecfcefd9efaeb0eba7fc195e215ee5d8150
->>>>>>> e5d82381cb91b439eabdf5fd36478a6a125522c3
+    <jar href="lib\common.jar" size="11039" download="eager" />
+    <jar href="tic_tac_toe_server.jar" size="66044" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="tic_tac_toe_server" >
     <param name="requiredFXVersion" value="8.0+"/>

@@ -414,7 +414,7 @@ public class Tic_tac_toe_client extends Application {
 
     // open play record screen by about us icon
     public void openPlayRecordScreen() {
-        if (player.isInGame()) {
+        if (!player.isInGame()) {
             playRecordGame = new PlayRecordGame(this);
             Scene scene = new Scene(playRecordGame, 900, 500);
             primaryStage.setScene(scene);

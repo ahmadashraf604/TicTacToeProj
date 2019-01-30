@@ -208,7 +208,7 @@ public class Tic_tac_toe_client extends Application {
             }
             return false;
         } else {
-            makeAlert("Error", "You can not play with other friend after the game is finished");
+            makeAlert("Error", "Sorry you should finish this game first to start a new game! ");
             return false;
         }
     }
@@ -219,7 +219,7 @@ public class Tic_tac_toe_client extends Application {
             this.isBeginer = false;
             this.sender = sender;
             this.reciever = reciever;
-            final String text = "your friend " + sender + " ask you to play ";
+            final String text = "Hi "+reciever+", your friend " + sender + " asks you to play a game";
 
             Platform.runLater(() -> {
                 if (makeInfoAlert("Playing invitation", text)) {
@@ -263,7 +263,7 @@ public class Tic_tac_toe_client extends Application {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    makeAlert("Error", "You Are sorry server is down");
+                    makeAlert("Error", "Oops!, server is down now! ");
                     logout();
                 }
             });
@@ -314,7 +314,7 @@ public class Tic_tac_toe_client extends Application {
 
     public void alertWinner(String body) {
         Platform.runLater(() -> {
-            makeAlert("Winner", "You Are Winner " + body);
+            makeAlert("Winner", "Congrats!, You are the winner." + body);
             player = renewPlayerInfo();
             multiPlayerScreen.endGame(player.getPoints());
         });
@@ -322,14 +322,14 @@ public class Tic_tac_toe_client extends Application {
 
     public void alertLosser() {
         Platform.runLater(() -> {
-            makeAlert("Losing", "You Are Lose the Game for Sorry");
+            makeAlert("Losing", "Hard luck!, Try to play again.");
             multiPlayerScreen.endGame(player.getPoints());
         });
     }
 
     public void alertDrawen() {
         Platform.runLater(() -> {
-            makeAlert("Drawen", "You Are Draw");
+            makeAlert("Drawen", "It's a draw!");
             player = renewPlayerInfo();
             multiPlayerScreen.endGame(player.getPoints());
         });
@@ -387,20 +387,20 @@ public class Tic_tac_toe_client extends Application {
         serverInt = null;
         Platform.runLater(() -> {
             //handel an action when server is off
-            makeAlert("Error", "we are sorry server is down please try again");
+            makeAlert("Error", "We are sorry server is down, please try again");
             openLoginScreen();
         });
     }
 
     // open about us screen by about us icon
     public void openAboutUsScreen() {
-        if (player.isInGame()) {
+        if (!player.isInGame()) {
             aboutUsScreen = new AboutUsScreen(this);
             Scene scene = new Scene(aboutUsScreen, 900, 500);
             primaryStage.setScene(scene);
             primaryStage.show();
         } else {
-            makeAlert("Error", "we are sorry, you should continue the game first");
+            makeAlert("Error", "Sorry, you should continue the game first");
         }
     }
 
@@ -412,7 +412,7 @@ public class Tic_tac_toe_client extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
         } else {
-            makeAlert("Error", "we are sorry, you should continue the game first");
+            makeAlert("Error", "Sorry, you should continue the game first");
         }
 
     }
@@ -422,15 +422,15 @@ public class Tic_tac_toe_client extends Application {
         aboutUsScreen.getAboutAnchorPane().setVisible(true);
         aboutUsScreen.getOfflineAnchorPane().setVisible(false);
         aboutUsScreen.getOnlineAnchorPane1().setVisible(false);
-
+        aboutUsScreen.hideRulesLabel();
     }
 
     //open how to play offline screen
     public void openHowToPlayOfflineScreen() {
         aboutUsScreen.getAboutAnchorPane().setVisible(false);
         aboutUsScreen.getOfflineAnchorPane().setVisible(true);
+        aboutUsScreen.setOfflineRules();
         aboutUsScreen.getOnlineAnchorPane1().setVisible(false);
-
     }
 
     //open how to play online screen
@@ -438,6 +438,7 @@ public class Tic_tac_toe_client extends Application {
         aboutUsScreen.getAboutAnchorPane().setVisible(false);
         aboutUsScreen.getOfflineAnchorPane().setVisible(false);
         aboutUsScreen.getOnlineAnchorPane1().setVisible(true);
+        aboutUsScreen.setOnlineRules();
     }
 
     public List<String> getRecordedPlayers() {
@@ -504,7 +505,7 @@ public class Tic_tac_toe_client extends Application {
 
     void refuseInvitation(String sender, String reciever) {
         Platform.runLater(() -> {
-            makeAlert("refusing", "your friend does not accept you invitation \n please try again");
+            makeAlert("refusing", "Unfortunately, Your invitation is refused.");
             multiPlayerScreen.setIsInvitationBtnClicked();
         });
     }

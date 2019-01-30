@@ -139,7 +139,7 @@ public class ServerView extends AnchorPane {
 
         label1.setLayoutX(85.0);
         label1.setLayoutY(313.0);
-        label1.setText("we are serve for ");
+        label1.setText("We serve");
         label1.setTextFill(javafx.scene.paint.Color.valueOf("#eecf56"));
         label1.setFont(new Font(17.0));
 

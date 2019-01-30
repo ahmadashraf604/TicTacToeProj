@@ -597,7 +597,7 @@ public class MultiPlayerScreen extends AnchorPane {
                         if (!isInvitationBtnClicked) {
                             isInvitationBtnClicked = true;
                             controller.sendInvition(player.getUsername());
-                            controller.makeAlert("waiting", "Please wait until the other respond");
+                            controller.makeAlert("waiting", "Your invitation sent, Waiting for the response..");
                         }
                     });
                 }

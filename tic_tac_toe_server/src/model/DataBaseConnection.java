@@ -25,7 +25,7 @@ public class DataBaseConnection {
 
         try {
             DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tic-tac-toe", "root", "1529");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tic-tac-toe", "root", "1994");
             statement = con.createStatement();
         } catch (SQLException ex) {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);

@@ -21,6 +21,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
@@ -174,6 +175,6 @@ public class Tic_tac_toe_server extends Application {
     }
 
     public void renewPlayerNumber(int playerNum) {
-        serverView.renewPlayerNumber(playerNum);
+        Platform.runLater(()-> serverView.renewPlayerNumber(playerNum)); 
     }
 }

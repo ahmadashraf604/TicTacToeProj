@@ -335,6 +335,7 @@ public class Tic_tac_toe_client extends Application {
     public void alertLosser() {
         Platform.runLater(() -> {
             makeAlert("Losing", "Hard luck!, Try to play again.");
+            player = renewPlayerInfo();
             multiPlayerScreen.endGame(player.getPoints());
         });
     }
@@ -418,7 +419,7 @@ public class Tic_tac_toe_client extends Application {
 
     // open play record screen by about us icon
     public void openPlayRecordScreen() {
-        if (player.isInGame()) {
+        if (!player.isInGame()) {
             playRecordGame = new PlayRecordGame(this);
             Scene scene = new Scene(playRecordGame, 900, 500);
             primaryStage.setScene(scene);

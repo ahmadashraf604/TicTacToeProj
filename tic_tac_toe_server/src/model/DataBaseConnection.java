@@ -25,7 +25,7 @@ public class DataBaseConnection {
 
         try {
             DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tic-tac-toe", "root", "1994");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tic-tac-toe", "root", "1529");
             statement = con.createStatement();
         } catch (SQLException ex) {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
@@ -291,9 +291,9 @@ public class DataBaseConnection {
 
     int getPlayerNum() {
         try {
-            ResultSet resultSet = statement.executeQuery("SELECT count(*) FROM players");
+            ResultSet resultSet = statement.executeQuery("SELECT count(*)  as count  FROM players");
             if (resultSet.next()) {
-                return resultSet.getInt(0);
+                return resultSet.getInt("count");
             }
         } catch (SQLException ex) {
             Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);

@@ -62,7 +62,7 @@ public class DataBaseConnection {
     public boolean isNotActive(String username) {
         try {
             ResultSet resultSet = statement.executeQuery(
-                    "SELECT * FROM players where (username='" + username + "' AND  active = '0' )");
+                   "SELECT * FROM players where (username='" + username + "' AND  active = '0' )");
             if (resultSet.first()) {
                 if (resultSet.getInt("active") == 0) {
 
@@ -73,6 +73,8 @@ public class DataBaseConnection {
                     System.out.println("online user");
                     return false;
                 }
+            }else {
+                    return true;
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

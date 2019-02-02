@@ -114,7 +114,7 @@ public class Tic_tac_toe_client extends Application {
         if (serverInt == null) {
             //connect to server
             try {
-//                Registry registry = LocateRegistry.getRegistry("10.0.1.184", 2015);
+                // Registry registry = LocateRegistry.getRegistry("10.0.1.184", 2015);
                 Registry registry = LocateRegistry.getRegistry(2015);
                 serverInt = (ServerInt) registry.lookup("ticTacToeServer");
             } catch (RemoteException | NotBoundException ex) {
@@ -134,18 +134,21 @@ public class Tic_tac_toe_client extends Application {
                 if (serverInt.checkIfActive(username)) {
                     System.out.println("not logged");
 
-                    player = serverInt.signin(username, password);
-                    if (player != null) {
-                        //register the user in server
-                        serverInt.register(username, client);
-                        openMultiPlayerScreen();
-                        loginScreen.getServerErrorLabel().setVisible(false);
-                        loginScreen.getInValidLabel().setVisible(false);
-                        return player;
+                    if (username.equalsIgnoreCase(" ") && password.equalsIgnoreCase(" ")) {
+                        loginScreen.getInValidLabel().setText("*please enter valid username and password");
                     } else {
-                        loginScreen.getServerErrorLabel().setVisible(false);
-                        loginScreen.getInValidLabel().setText("*wrong username or password");
-                        loginScreen.getInValidLabel().setVisible(true);
+                        player = serverInt.signin(username, password);
+                        if (player != null) {
+                            //register the user in server
+                            serverInt.register(username, client);
+                            openMultiPlayerScreen();
+                            loginScreen.getServerErrorLabel().setVisible(false);
+                            loginScreen.getInValidLabel().setVisible(false);
+                            return player;
+                        } else {
+                            loginScreen.getServerErrorLabel().setVisible(false);
+                            loginScreen.getInValidLabel().setVisible(true);
+                        }
                     }
                 } else {
                     System.out.println(serverInt.checkIfActive(username));
@@ -154,6 +157,7 @@ public class Tic_tac_toe_client extends Application {
                     loginScreen.getInValidLabel().setText("already logged in!");
                     loginScreen.getInValidLabel().setVisible(true);
                 }
+
             } catch (RemoteException ex) {
                 serverInt = null;
                 loginScreen.getServerErrorLabel().setVisible(true);
@@ -226,7 +230,7 @@ public class Tic_tac_toe_client extends Application {
             this.isBeginer = false;
             this.sender = sender;
             this.reciever = reciever;
-            final String text = "Hi "+reciever+", your friend " + sender + " asks you to play a game";
+            final String text = "Hi " + reciever + ", your friend " + sender + " asks you to play a game";
 
             Platform.runLater(() -> {
                 if (makeInfoAlert("Playing invitation", text)) {

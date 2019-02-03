@@ -254,7 +254,7 @@ public class PlayRecordGame extends AnchorPane {
 
         gridPane.setPrefHeight(420.0);
         gridPane.setPrefWidth(420.0);
-        gridPane.setStyle("-fx-background-color: " + controller.SCENE_FORGROUND);
+        gridPane.setStyle("-fx-background-color: #eecf56");
 
         columnConstraints.setHgrow(javafx.scene.layout.Priority.SOMETIMES);
 
@@ -402,14 +402,14 @@ public class PlayRecordGame extends AnchorPane {
                 @Override
                 public void stop() {
                     super.stop();
-                    if (game.getResult().equals("Drow")) {
+                    if (game.getResult().equalsIgnoreCase("Draw")) {
                         Platform.runLater(()
                                 -> controller.makeAlert("The result",
-                                        "the winner is " + game.getResult()));
+                                        "the result was " + game.getResult()));
                     } else {
                         Platform.runLater(()
                                 -> controller.makeAlert("The result",
-                                        "The result is " + game.getResult()));
+                                        "The winner was " + game.getResult()));
                     }
                     listView.setDisable(false);
                     vsLabel.setVisible(false);

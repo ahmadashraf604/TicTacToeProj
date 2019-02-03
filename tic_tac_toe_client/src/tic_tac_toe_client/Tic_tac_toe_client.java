@@ -131,11 +131,10 @@ public class Tic_tac_toe_client extends Application {
     public Player signin(String username, String password) {
         if (connectToRegisery()) {
             try {
-
-                if (username.equalsIgnoreCase(" ") && password.equalsIgnoreCase(" ")) {
-                    loginScreen.getInValidLabel().setText("*please enter valid username and password");
-                } else {
-                    if (serverInt.isPlayerOnline(username)) {
+                if (serverInt.checkIfActive(username)) {
+                    if (username.equalsIgnoreCase(" ") && password.equalsIgnoreCase(" ")) {
+                        loginScreen.getInValidLabel().setText("*please enter valid username and password");
+                    } else {
                         player = serverInt.signin(username, password);
                         if (player != null) {
                             //register the user in server
@@ -148,12 +147,14 @@ public class Tic_tac_toe_client extends Application {
                             loginScreen.getServerErrorLabel().setVisible(false);
                             loginScreen.getInValidLabel().setVisible(true);
                         }
-                    } else {
-                        loginScreen.getServerErrorLabel().setVisible(false);
-                        loginScreen.getInValidLabel().setText("already logged in!");
-                        loginScreen.getInValidLabel().setVisible(true);
                     }
+                } else {
+                    System.out.println(serverInt.checkIfActive(username));
+                    loginScreen.getServerErrorLabel().setVisible(false);
+                    loginScreen.getInValidLabel().setText("already logged in!");
+                    loginScreen.getInValidLabel().setVisible(true);
                 }
+
             } catch (RemoteException ex) {
                 serverInt = null;
                 loginScreen.getServerErrorLabel().setVisible(true);

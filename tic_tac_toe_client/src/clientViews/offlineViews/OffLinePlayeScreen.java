@@ -2,12 +2,12 @@ package clientViews.offlineViews;
 
 import clientViews.LoginScreen;
 import java.util.Optional;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -338,7 +338,7 @@ public class OffLinePlayeScreen extends AnchorPane {
                 cellFallCounter++;
 
                 if (checkWin(cell, 'x')) {
-                    makeAlert("Tic Tac toe", "you win!");
+                    makeAlert("Tic Tac toe", "Congrats!, you are the winner");
                 } else {
                     computerTurn(cell);
                 }
@@ -346,25 +346,32 @@ public class OffLinePlayeScreen extends AnchorPane {
         }
 
         if (cellFallCounter == 9 && !(checkWin(cell, 'x') || checkWin(cell, 'o'))) {
-            makeAlert("Tic Tac toe", "you draw!");
+            makeAlert("Tic Tac toe", "it's a draw!");
         }
     }
 
-    public boolean makeAlert(String title, String text) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    private boolean setAlertSetting(Alert alert, String title, String body) {
         alert.setTitle(title);
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        alert.getDialogPane().setStyle("-fx-background-color: #2c3e50; -fx-fill: #292929;");
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/backgroundB.png")));
         alert.setHeaderText(null);
-        alert.setContentText(text);
+        alert.setContentText(body);
         ImageView imageView = new ImageView(
                 new Image(getClass().getResourceAsStream("/images/background.png")));
         imageView.setFitHeight(50.0);
         imageView.setFitWidth(50.0);
         alert.setGraphic(imageView);
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(
+                getClass().getResource("/tic_tac_toe_client/myDialogs.css").toExternalForm());
+        dialogPane.getStyleClass().add("myDialog");
         Optional<ButtonType> action = alert.showAndWait();
-        return action.isPresent();
+        return action.get() == ButtonType.OK;
+    }
+
+    public boolean makeAlert(String title, String body) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        return setAlertSetting(alert, title, body);
     }
 
     public void computerTurn(char cell[][]) {
@@ -389,7 +396,7 @@ public class OffLinePlayeScreen extends AnchorPane {
 
                 //  isEnd = checkWin(cell, 'x');
                 if (checkWin(cell, 'o')) {
-                    makeAlert("Tic Tac Toe", "you Lose!");
+                    makeAlert("Tic Tac Toe", "Hard luck!, try to play.");
 
                 }
                 break;
@@ -450,7 +457,7 @@ public class OffLinePlayeScreen extends AnchorPane {
                 isEnd = checkWin(cell, 'o');
                 // isEnd = checkWin(cell, 'x');
                 if (checkWin(cell, 'o')) {
-                    makeAlert("Tic Tac Toe", "You Lose!");
+                    makeAlert("Tic Tac Toe", "Hard luck!, try to play.");
 
                 }
                 break;
@@ -514,7 +521,7 @@ public class OffLinePlayeScreen extends AnchorPane {
             x_Trun = true;
             cell[2][0] = 'o';
             imageView5.setImage(new Image(getClass().getResource("/images/o.png").toExternalForm()));
-        } else if (cell[0][0] == 'x' && cell[1][1] == 'x' && cell[2][2] == '\0') {        
+        } else if (cell[0][0] == 'x' && cell[1][1] == 'x' && cell[2][2] == '\0') {
             x_Trun = true;
             cell[2][2] = 'o';
             imageView7.setImage(new Image(getClass().getResource("/images/o.png").toExternalForm()));

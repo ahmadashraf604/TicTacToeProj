@@ -2,6 +2,13 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+<<<<<<< HEAD
         <group/>
+=======
+        <group>
+            <file>file:/G:/ITI/Java/Project/final/TicTacToeProj/tic_tac_toe_server/src/tic_tac_toe_server/Tic_tac_toe_server.java</file>
+            <file>file:/G:/ITI/Java/Project/final/TicTacToeProj/tic_tac_toe_server/src/model/ServerImplemention.java</file>
+        </group>
+>>>>>>> 0cd32ece9361b064a2f619c5093476be6d371388
     </open-files>
 </project-private>

@@ -3,6 +3,8 @@ package clientViews;
 import common.Player;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -122,7 +124,7 @@ public class RegisterScreen extends AnchorPane {
         passwordTextField2.setLayoutY(222.0);
         passwordTextField2.setPrefHeight(25.0);
         passwordTextField2.setPrefWidth(200.0);
-         passwordTextField2.setPromptText("Password");
+        passwordTextField2.setPromptText("Password");
         passwordTextField2.setStyle("-fx-prompt-text-fill: gray;");
         passwordTextField2.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -243,7 +245,7 @@ public class RegisterScreen extends AnchorPane {
                         stage.setTitle("sign in");
                         stage.setScene(scene);
                         stage.show();
-                    }else {
+                    } else {
                         emailTextFieldError2.setText("*this email is already exist");
                     }
 
@@ -252,7 +254,8 @@ public class RegisterScreen extends AnchorPane {
                         emailTextFieldError2.setText("*please enter valid email");
                     }
                     if (!isValidUserName(userNameTextField2.getText())) {
-                        userNameTextFieldError2.setText("*please enter username between " + "\n " + 4 + " and " + 7 + " characters");                    }
+                        userNameTextFieldError2.setText("*please enter username between " + "\n " + 4 + " and " + 7 + " characters");
+                    }
                     if (!isValidPassword(passwordTextField2.getText())) {
                         passwordTextFieldError2.setText("*please enter password with" + "\n" + " min 8 characters");
                     }
@@ -265,26 +268,35 @@ public class RegisterScreen extends AnchorPane {
     //xya@xyz.com
     public boolean isValidEmail(String email) {
         boolean isValid = true;
-        try {
+        /*try {
             InternetAddress emailAddr = new InternetAddress(email);
             emailAddr.validate();
         } catch (AddressException ex) {
             isValid = false;
-        }
-
-          /*String emailExp = "^([\\w-\\.]+){1,64}@([\\w&&[^_]]+){2,255}.[a-z]{2,}$";
-        if (email.matches(emailExp)) {
-            isValid = true;
-        } else {
-            isValid = false;
         }*/
-        return isValid;
+        Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", 
+                                                            Pattern.CASE_INSENSITIVE);
+    
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(email);
+        return matcher.find();
+
+    /*String emailExp = "^([\\w-\\.]+){1,64}@([\\w&&[^_]]+){2,255}.[a-z]{2,}$";
+    if (email.matches (emailExp) 
+        ) {
+            isValid = true;
     }
 
-    //validate username
-    /*from 8 to 20 characters, no _ or . at the beginning, no __ or _. or ._ or .. inside, 
+    
+        else {
+            isValid = false;
+    }
+    return isValid ;*/
+}
+
+//validate username
+/*from 8 to 20 characters, no _ or . at the beginning, no __ or _. or ._ or .. inside, 
     allowed characters,  no _ or . at the end*/
-    public boolean isValidUserName(String userName) {
+public boolean isValidUserName(String userName) {
         String regularExpression = "^(?=.{4,7}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$";
         boolean isValid = true;
         if (userName.matches(regularExpression)) {
